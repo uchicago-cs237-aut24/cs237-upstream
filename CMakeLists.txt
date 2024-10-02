@@ -72,8 +72,8 @@ find_package(PNG 1.5 REQUIRED)
 #
 option (CS237_ENABLE_DOXYGEN "Enable doxygen for generating cs237 library documentation." OFF)
 option (CS237_VERBOSE_MAKEFILE "Enable verbose makefiles." OFF)
-option (CS237_BUILD_LABS "Build the solutions to the lab assignments" ON)
-option (CS237_BUILD_PROJS "Build the solutions to the projects" ON)
+option (CS237_BUILD_LABS "Build the lab assignments" ON)
+option (CS237_BUILD_PROJS "Build the individual projects" OFF)
 
 # enable verbose makefiles
 #
