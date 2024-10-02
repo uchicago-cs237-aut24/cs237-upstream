@@ -78,6 +78,9 @@ Lab1Window::Lab1Window (Lab1 *app)
 
 Lab1Window::~Lab1Window ()
 {
+    this->device().destroyPipeline(this->_graphicsPipeline);
+    this->device().destroyPipelineLayout(this->_pipelineLayout);
+    this->device().destroyRenderPass(this->_renderPass);
 }
 
 void Lab1Window::_initRenderPass ()
