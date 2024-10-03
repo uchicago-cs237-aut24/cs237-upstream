@@ -94,10 +94,10 @@ set(CS237_INCLUDE_DIR
   ${CMAKE_SOURCE_DIR}/cs237-library/include
   ${CMAKE_CURRENT_BINARY_DIR}/cs237-library/include)
 include_directories(
+  ${CS237_INCLUDE_DIR}
   ${GLFW_INCLUDE_DIR}
   ${Vulkan_INCLUDE_DIR}
-  ${PNG_INCLUDE_DIR}
-  ${CS237_INCLUDE_DIR})
+  ${PNG_INCLUDE_DIR})
 
 # libraries
 link_libraries(${GLFW_LIBRARY})
