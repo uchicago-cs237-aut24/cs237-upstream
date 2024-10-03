@@ -341,7 +341,12 @@
 
 // [nodiscard]
 #if GLM_LANG & GLM_LANG_CXX17_FLAG
+// [CS237] some older versions of clang do not accept the [nodiscard] attribute
+#if (__clang_major__ < 16)
+#	define GLM_NODISCARD
+#else
 #	define GLM_NODISCARD [[nodiscard]]
+#endif
 #else
 #	define GLM_NODISCARD
 #endif
