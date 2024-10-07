@@ -171,8 +171,8 @@ public:
     /// putting the least frequently changing descriptor sets at the
     /// beginning.
     vk::PipelineLayout createPipelineLayout (
-        std::vector<vk::DescriptorSetLayout> descSets,
-        std::vector<vk::PushConstantRange> pcrs)
+        vk::ArrayProxy<vk::DescriptorSetLayout> descSets,
+        vk::ArrayProxy<vk::PushConstantRange> pcrs)
     {
         vk::PipelineLayoutCreateInfo layoutInfo(
             {}, /* flags */
