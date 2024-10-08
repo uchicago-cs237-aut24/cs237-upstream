@@ -98,6 +98,9 @@ public:
     /// constructor
     /// \param app     the owning application object
     /// \param nVerts  the number of vertices in the buffer
+    ///
+    /// This constructor creates the vertex buffer and allocates GPU-side memory
+    /// for it.
     VertexBuffer (Application *app, uint32_t nVerts)
       : Buffer (app, vk::BufferUsageFlagBits::eVertexBuffer, nVerts*sizeof(V))
     { }
@@ -105,6 +108,9 @@ public:
     /// constructor with initialization
     /// \param app  the owning application object
     /// \param src  the array of vertices used to initialize the buffer
+    ///
+    /// This constructor creates the vertex buffer, allocates GPU-side memory
+    /// for it, and then copies the data from `src` to the GPU.
     VertexBuffer (Application *app, vk::ArrayProxy<V> const &src)
       : VertexBuffer(app, src.size())
     {
