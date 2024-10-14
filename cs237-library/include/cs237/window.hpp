@@ -237,6 +237,7 @@ protected:
                                         ///  of the rendering operation
         uint32_t index;                 ///< the swap-chain image index for this frame
                                         ///  This field is set by the window's
+                                        ///  `_acquireNextImage` method.
 
         /// Constructor
         /// \param win  the owning window
