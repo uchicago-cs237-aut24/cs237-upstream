@@ -72,6 +72,11 @@ public:
     /// destructor: it destroys the underlying GLFW window
     virtual ~Window ();
 
+    /// method for completing the initialization of a window.  This function allocates
+    /// the per-frame data array and also invokes the virtual `_init` method to handle
+    /// and sub-class specific initialization that was not handled in the constructor.
+    void initialize ();
+
     /// return the application pointer
     Application *app () { return this->_app; }
 
@@ -299,6 +304,10 @@ protected:
     /// \param app      the owning application
     /// \param info     information for creating the window, such as size and title
     Window (Application *app, CreateWindowInfo const &info);
+
+    /// subclasses can override this method to handle any additional initialization
+    /// that needs to be run after the window object is constructed.
+    virtual void _init ();
 
     /// \brief Get the swap-chain details for a physical device
     SwapChainDetails _getSwapChainDetails ();

@@ -118,14 +118,36 @@ Window::Window (Application *app, CreateWindowInfo const &info)
     // set up the swap chain for the surface
     this->_createSwapChain (info.depth, info.stencil);
 
-    // allocate the per-frame render state
+    for (int i = 0;  i < kMaxFrames;  ++i) {
+        this->_frames[i] = nullptr;
+    }
+
+}
+
+void Window::initialize ()
+{
+    // allocate the per-frame render state; note that since `_allocFrameData` is
+    // a virtual function, we need to call it after the window is constructed.
+    // see https://isocpp.org/wiki/faq/strange-inheritance#calling-virtuals-from-ctors
     for (int i = 0;  i < kMaxFrames;  ++i) {
         this->_frames[i] = this->_allocFrameData (this);
     }
+
+    // invoke any additional initialization required by the window subclass
+    this->_init ();
 }
+
+// default implementation of `_init` method.
+/* virtual */
+void Window::_init () { }
 
 Window::~Window ()
 {
+    // deallocate the frame data
+    for (int i = 0;  i < kMaxFrames;  ++i) {
+        delete this->_frames[i];
+    }
+
     // destroy the swap chain as associated state
     this->_swap.cleanup ();
 
