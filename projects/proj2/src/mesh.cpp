@@ -87,7 +87,8 @@ Mesh::Mesh (Proj2 *app, vk::PrimitiveTopology p, OBJ::Model const *model)
     for (int i = 0;  i < grp.nVerts;  i++) {
         glm::vec3 n = grp.norms[i];
         glm::vec3 t = glm::normalize(tan[i]);
-      // orthogonalize
+        /* NOTE: we only care about the direction of bitan[i], so we do not normalize */
+        // orthogonalize the tangent and normal
         t = glm::normalize(t - n * dot(n, t));
         float w = (glm::dot(glm::cross(n, t), bitan[i]) < 0.0f ? -1.0f : 1.0f);
         verts[i].tan = glm::vec4(t, w);
