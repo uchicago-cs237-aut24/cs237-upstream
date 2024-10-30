@@ -489,7 +489,7 @@ Renderer *Lab5Window::_createViewRenderer (bool shadows)
             this->_drawableDSLayout /* set 1 */
         };
     if (shadows) {
-        dsLayouts.push_back(this->_depthDSLayout);
+        dsLayouts.push_back(this->_depthDSLayout); /* set 2 */
     }
     vk::PipelineLayoutCreateInfo layoutInfo(
         {}, /* flags */
@@ -575,8 +575,6 @@ void Lab5Window::_recordCommandBuffer (Lab5Window::FrameData *frame)
 
         // draw the objects
         for (auto obj : this->_objs) {
-            // bind the descriptor sets for the ubo and color-map samplers
-            obj->bindDescriptorSet(cmdBuf, this->_depthPipelineLayout);
             // set the push constants
             obj->emitPushConstants(cmdBuf,
                 this->_depthPipelineLayout,
@@ -630,7 +628,7 @@ void Lab5Window::_recordCommandBuffer (Lab5Window::FrameData *frame)
     }
 
     for (auto obj : this->_objs) {
-        // bind the descriptor sets for the ubo and color-map samplers
+        // bind the descriptor set for the color-map sampler
         obj->bindDescriptorSet(frame->cmdBuf, renderer->pipelineLayout);
         // set the push constants
         obj->emitPushConstants(cmdBuf,
