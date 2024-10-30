@@ -13,14 +13,6 @@
 
 #version 460
 
-// matrix for mapping 2x2x1 clip coordinates to [0,1] range
-// in column-major order
-const mat4 biasMat = mat4(
-    0.5, 0.0, 0.0, 0.0,  // first column
-    0.0, 0.5, 0.0, 0.0,
-    0.0, 0.0, 1.0, 0.0,
-    0.5, 0.5, 0.0, 1.0);
-
 // we use push-constants for the per-mesh uniform data
 layout (push_constant) uniform PC {
     mat4 modelMat;      ///< model-space to world-space transform

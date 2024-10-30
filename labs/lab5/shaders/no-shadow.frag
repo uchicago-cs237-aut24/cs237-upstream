@@ -16,7 +16,6 @@
 /** hard coded illumination levels **/
 const vec3 ambLightIllum = vec3(0.15f, 0.15f, 0.15f);
 const vec3 lightIllum = vec3(0.85f, 0.85f, 0.85f);
-const float shadowEffect = 0.25;
 
 // we use push-constants for the per-mesh uniform data
 layout (push_constant) uniform PC {
