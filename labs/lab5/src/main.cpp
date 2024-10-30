@@ -39,6 +39,20 @@ constexpr float kLightNearZ = 0.2f;
 constexpr uint32_t kDepthTextureWid = 1024;
 constexpr uint32_t kDepthTextureHt = 1024;
 
+/******************** view renderer ********************/
+
+/// the information needed to render the view in a given mode (shadows or no shadows)
+struct Renderer {
+    vk::PipelineLayout pipelineLayout;
+    vk::Pipeline pipeline;
+
+    void destroy (vk::Device device)
+    {
+        device.destroyPipeline(this->pipeline);
+        device.destroyPipelineLayout(this->pipelineLayout);
+    }
+};
+
 /******************** derived classes ********************/
 
 /// The Lab 5 Application class
@@ -92,9 +106,11 @@ private:
     vk::Framebuffer _depthFrameBuffer;          ///< output buffer for depth pass
 
     // view rendering pass
-    vk::RenderPass _viewRenderPass;
-    vk::PipelineLayout _viewPipelineLayout;
-    vk::Pipeline _viewPipeline;
+    vk::RenderPass _viewRenderPass;             ///< the view render pass
+    Renderer *_noShadowRenderer;                ///< renderer for when shadows are
+                                                ///  disabled
+    Renderer *_shadowRenderer;                  ///< renderer for when shadows are
+                                                ///  enabled
     std::vector<vk::Framebuffer> _framebuffers;
 
     // descriptors
@@ -123,6 +139,32 @@ private:
     glm::mat4 _worldToLight;                    ///< world-space to light-space transform
     UB _uboCache;                               ///< cache the per-drawable UBO data
 
+    /// get the current renderer
+    Renderer *_renderer ()
+    {
+        if (this->_uboCache.enableShadows == VK_TRUE) {
+            return this->_shadowRenderer;
+        } else {
+            return this->_noShadowRenderer;
+        }
+    }
+
+    /// toggle the current texture mode
+    void toggleTextureMode ()
+    {
+        this->_uboCache.enableTexture =
+            (this->_uboCache.enableTexture == VK_FALSE) ? VK_TRUE : VK_FALSE;
+        this->_invalidateFrameUBOs();
+    }
+
+    /// toggle the current shadow mode
+    void toggleShadowMode ()
+    {
+        this->_uboCache.enableShadows =
+            (this->_uboCache.enableShadows == VK_FALSE) ? VK_TRUE : VK_FALSE;
+        this->_invalidateFrameUBOs();
+    }
+
     /// initialize the descriptor-set pools and layouts
     void _initDescriptorSetLayouts ();
 
@@ -136,8 +178,8 @@ private:
 
     /// initialize the `_viewRenderPass` field
     void _initViewRenderPass ();
-    /// initialize the `_pipelineLayout` and `_viewPipeline` fields
-    void _initViewPipeline ();
+    /// create and initialize a view renderer
+    Renderer *_createViewRenderer (bool shadows);
 
     /// allocate and initialize the drawables
     void _initDrawables ();
@@ -223,7 +265,8 @@ Lab5Window::Lab5Window (Lab5 *app)
     this->_initDescriptorSetLayouts ();
 
     this->_initDepthPipeline ();
-    this->_initViewPipeline ();
+    this->_noShadowRenderer = this->_createViewRenderer (false);
+    this->_shadowRenderer = this->_createViewRenderer (true);
 
     this->_initDescriptorSets();
 
@@ -242,9 +285,10 @@ Lab5Window::~Lab5Window ()
     auto device = this->device();
 
     // clean up view resources
-    device.destroyPipeline(this->_viewPipeline);
+    this->_noShadowRenderer->destroy(device);
+    this->_shadowRenderer->destroy(device);
+
     device.destroyRenderPass(this->_viewRenderPass);
-    device.destroyPipelineLayout(this->_viewPipelineLayout);
 
     // clean up depth-buffer resources
     device.destroyFramebuffer(this->_depthFrameBuffer);
@@ -430,29 +474,34 @@ void Lab5Window::_initDepthPipeline ()
      */
 }
 
-void Lab5Window::_initViewPipeline ()
+Renderer *Lab5Window::_createViewRenderer (bool shadows)
 {
-    // initialize the pipeline layout for rendering
+    Renderer *renderer = new Renderer;
+
+    // create the pipeline layout for view rendering
     vk::PushConstantRange pcRange = {
             vk::ShaderStageFlagBits::eVertex|vk::ShaderStageFlagBits::eFragment,
             0,
             sizeof(PC),
         };
-    std::array<vk::DescriptorSetLayout,3> dsLayouts = {
+    std::vector dsLayouts = {
             this->_uboDSLayout, /* set 0 */
-            this->_drawableDSLayout, /* set 1 */
-            this->_depthDSLayout /* set 2 */
+            this->_drawableDSLayout /* set 1 */
         };
+    if (shadows) {
+        dsLayouts.push_back(this->_depthDSLayout);
+    }
     vk::PipelineLayoutCreateInfo layoutInfo(
         {}, /* flags */
         dsLayouts, /* set layouts */
         pcRange); /* push constants */
-    this->_viewPipelineLayout = this->device().createPipelineLayout(layoutInfo);
+    renderer->pipelineLayout = this->device().createPipelineLayout(layoutInfo);
 
     // load the shaders
     vk::ShaderStageFlags stages =
         vk::ShaderStageFlagBits::eVertex | vk::ShaderStageFlagBits::eFragment;
-    auto shaders = new cs237::Shaders(this->device(), kShaderDir + "scene", stages);
+    std::string shaderName = kShaderDir + (shadows ? "shadow" : "no-shadow");
+    auto shaders = new cs237::Shaders(this->device(), shaderName, stages);
 
     // vertex input info
     auto vertexInfo = cs237::vertexInputInfo (
@@ -464,7 +513,7 @@ void Lab5Window::_initViewPipeline ()
         vk::DynamicState::eScissor
     };
 
-    this->_viewPipeline = this->_app->createPipeline(
+    renderer->pipeline = this->_app->createPipeline(
         shaders,
         vertexInfo,
         vk::PrimitiveTopology::eTriangleList,
@@ -476,7 +525,7 @@ void Lab5Window::_initViewPipeline ()
         vk::CullModeFlagBits::eBack,
         // we are following the OpenGL convention for front faces
         vk::FrontFace::eCounterClockwise,
-        this->_viewPipelineLayout,
+        renderer->pipelineLayout,
         this->_viewRenderPass,
         0,
         dynamicStates);
@@ -484,6 +533,7 @@ void Lab5Window::_initViewPipeline ()
     cs237::destroyVertexInputInfo (vertexInfo);
     delete shaders;
 
+    return renderer;
 }
 
 /******************** Rendering ********************/
@@ -551,10 +601,12 @@ void Lab5Window::_recordCommandBuffer (Lab5Window::FrameData *frame)
         clearValues);
     cmdBuf.beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
 
+    auto renderer = this->_renderer();
+
     /*** BEGIN COMMANDS ***/
     cmdBuf.bindPipeline(
         vk::PipelineBindPoint::eGraphics,
-        this->_viewPipeline);
+        this->_renderer()->pipeline);
 
     // set the viewport using the OpenGL convention
     this->_setViewportCmd (frame->cmdBuf, true);
@@ -562,25 +614,27 @@ void Lab5Window::_recordCommandBuffer (Lab5Window::FrameData *frame)
     // bind the descriptor for the uniform buffer
     cmdBuf.bindDescriptorSets(
         vk::PipelineBindPoint::eGraphics,
-        this->_viewPipelineLayout,
+        renderer->pipelineLayout,
         kUBODescSetID,
         frame->descSet,
         nullptr);
 
-    // bind the descriptor for the shadow map (aka depth buffer)
-    cmdBuf.bindDescriptorSets(
-        vk::PipelineBindPoint::eGraphics,
-        this->_viewPipelineLayout,
-        kSMapDescSetID,
-        this->_depthDS,
-        nullptr);
+    // conditionally bind the descriptor for the shadow map (aka depth buffer)
+    if (this->_uboCache.enableShadows) {
+        cmdBuf.bindDescriptorSets(
+            vk::PipelineBindPoint::eGraphics,
+            renderer->pipelineLayout,
+            kSMapDescSetID,
+            this->_depthDS,
+            nullptr);
+    }
 
     for (auto obj : this->_objs) {
         // bind the descriptor sets for the ubo and color-map samplers
-        obj->bindDescriptorSet(frame->cmdBuf, this->_viewPipelineLayout);
+        obj->bindDescriptorSet(frame->cmdBuf, renderer->pipelineLayout);
         // set the push constants
         obj->emitPushConstants(cmdBuf,
-            this->_viewPipelineLayout,
+            renderer->pipelineLayout,
             vk::ShaderStageFlagBits::eVertex|vk::ShaderStageFlagBits::eFragment);
         // render the drawable
         obj->draw (frame->cmdBuf);
@@ -650,17 +704,13 @@ void Lab5Window::key (int key, int scancode, int action, int mods)
                 break;
 
             case GLFW_KEY_T:  // 't' or 'T' ==> toggle texturing
-                this->_uboCache.enableTexture =
-                    this->_uboCache.enableTexture ? VK_FALSE : VK_TRUE;
-                this->_invalidateFrameUBOs();
+                this->toggleTextureMode();
                 std::cout << "Toggle texturing "
                     << (this->_uboCache.enableTexture ? "on\n" : "off\n");
                 break;
 
             case GLFW_KEY_S:  // 's' or 'S' ==> toggle shadowing
-                this->_uboCache.enableShadows =
-                    this->_uboCache.enableShadows ? VK_FALSE : VK_TRUE;
-                this->_invalidateFrameUBOs();
+                this->toggleShadowMode();
                 std::cout << "Toggle shadows "
                     << (this->_uboCache.enableShadows ? "on\n" : "off\n");
                 break;
@@ -758,6 +808,8 @@ void Lab5::run ()
 
     // wait until any in-flight rendering is complete
     this->_device.waitIdle();
+
+    delete win;
 }
 
 /******************** main ********************/

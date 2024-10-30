@@ -11,8 +11,10 @@
 set(SRCS
   depth.frag
   depth.vert
-  scene.frag
-  scene.vert)
+  no-shadow.frag
+  no-shadow.vert
+  shadow.frag
+  shadow.vert)
 
 # custom commands for compiling shaders
 #

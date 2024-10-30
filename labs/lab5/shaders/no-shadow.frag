@@ -1,4 +1,4 @@
-/*! \file scene.vsh
+/*! \file no-shadow.frag
  *
  * Lab 5 sample code: fragment shader for the scene.
  *
@@ -31,19 +31,15 @@ layout (set = 0, binding = 0) uniform UB {
     mat4 shadowMat;     ///< world-space to light-space transform
     vec3 lightDir;      ///< light direction in eye coordinates
     int enableTexture;  ///< non-zero when texturing is enabled
-    int enableShadows;  ///< non-zero when shadows are enabled
+    int enableShadows;  ///< non-zero when shadows are enabled (should be VK_FALSE)
 } ubo;
 
 /// per-mesh color map
 layout (set = 1, binding = 0) uniform sampler2D colorMap;
 
-/// shadow map computed in the first pass
-layout (set = 2, binding = 0) uniform sampler2D shadowMap;
-
-layout (location = 0) in vec4 fShadowPos; ///< shadow coordinate
-layout (location = 1) in vec3 fNorm;    ///< interpolated vertex normal in
+layout (location = 0) in vec3 fNorm;    ///< interpolated vertex normal in
                                         ///  world coordinates
-layout (location = 2) in vec2 fTC;      ///< vertex tex coordinate
+layout (location = 1) in vec2 fTC;      ///< vertex tex coordinate
 
 layout (location = 0) out vec4 fragColor;
 
@@ -63,8 +59,6 @@ void main ()
     } else {
         surfaceC = pc.color;
     }
-
-    /** HINT: when shadowing is enabled, shadow test goes here */
 
     // the fragment color is the light color times the surface color
     fragColor = vec4(lightC * surfaceC, 1.0);

@@ -1,6 +1,6 @@
-/*! \file scene.vert
+/*! \file shadow.vert
  *
- * Lab 5 sample code: vertex shader for the scene.
+ * Lab 5 sample code: vertex shader for the scene with shadows enabled.
  *
  * \author John Reppy
  */
@@ -34,7 +34,7 @@ layout (set = 0, binding = 0) uniform UB {
     mat4 shadowMat;     ///< world-space to light-space transform
     vec3 lightDir;      ///< light direction in eye coordinates
     int enableTexture;  ///< non-zero when texturing is enabled
-    int enableShadows;  ///< non-zero when shadows are enabled
+    int enableShadows;  ///< non-zero when shadows are enabled (should be VK_TRUE)
 } ubo;
 
 layout (location = 0) in vec3 vPos;	///< vertex position in model coordinates
