@@ -1,0 +1,9 @@
+The “crate-tex.png” is a texture developed by Michael Cameron under
+Creative Commons Attribution 3.0 Unported license and modified for this lab
+
+credit link : http://opengameart.org/content/a-simple-crate
+CC-BY 3.0 link : http://creativecommons.org/licenses/by/3.0/
+
+
+The "floor-tex.png" file is from https://dentrodabiblia.blogspot.com/2018/03/concrete-textures.html
+
