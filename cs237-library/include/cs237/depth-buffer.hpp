@@ -61,7 +61,7 @@ public:
         return vk::DescriptorImageInfo(
             this->_sampler,
             this->_imageView,
-            vk::ImageLayout::eShaderReadOnlyOptimal);
+            vk::ImageLayout::eDepthStencilReadOnlyOptimal);
     }
 
     /// create a framebuffer that writes to the depth-buffer image.
