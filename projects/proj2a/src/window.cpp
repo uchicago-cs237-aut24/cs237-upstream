@@ -38,7 +38,7 @@ Proj2Window::Proj2Window (Proj2 *app)
 
     // initialize the cached lighting info
     this->_sceneUBCache.ambLight = this->_scene()->ambientLight();
-    this->_sceneUBCache.lightDir = this->_scene()->lightDir();
+    this->_sceneUBCache.lightDir = -glm::normalize(this->_scene()->lightDir());
     this->_sceneUBCache.lightColor = this->_scene()->lightIntensity();
 
     // initialize the scene-data cache
