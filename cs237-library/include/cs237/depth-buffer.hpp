@@ -14,7 +14,7 @@
 #define _CS237_DEPTH_BUFFER_HPP_
 
 #ifndef _CS237_HPP_
-#error "cs237-depth-buffer.hpp should not be included directly"
+#error "cs237/depth-buffer.hpp should not be included directly"
 #endif
 
 namespace cs237 {

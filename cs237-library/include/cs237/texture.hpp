@@ -14,6 +14,10 @@
 #ifndef _CS237_TEXTURE_HPP_
 #define _CS237_TEXTURE_HPP_
 
+#ifndef _CS237_HPP_
+#  error "cs237/texture.hpp should not be included directly"
+#endif
+
 namespace cs237 {
 
 namespace __detail {

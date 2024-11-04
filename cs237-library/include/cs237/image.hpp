@@ -14,7 +14,7 @@
 #define _CS237_IMAGE_HPP_
 
 #ifndef _CS237_HPP_
-#error "cs237-image.hpp should not be included directly"
+#error "cs237/image.hpp should not be included directly"
 #endif
 
 #include <fstream>

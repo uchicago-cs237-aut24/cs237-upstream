@@ -13,7 +13,7 @@
 #define _CS237_PLANE_HPP_
 
 #ifndef _CS237_HPP_
-#error "cs237-plane.hpp should not be included directly"
+#error "cs237/plane.hpp should not be included directly"
 #endif
 
 namespace cs237 {
