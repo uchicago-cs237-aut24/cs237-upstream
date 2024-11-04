@@ -172,7 +172,7 @@ public:
       : Renderer (app, rp)
     {
         std::vector<vk::DescriptorSetLayout> layouts = {
-                sceneDS, samplerDS, app->meshDSLayout()
+                sceneDS, samplerDS
             };
         this->_initPipeline(RenderMode::eTextureShading, layouts);
 
@@ -191,8 +191,6 @@ public:
 
     /// bind the descriptor sets for rendering a given object
     /// \param cmdBuf   the command buffer to store the bind command in
-    /// \param vertUBO  the vertex-shader uniform-buffer-object information for
-    ///                 the frame being rendered
     /// \param inst     the instance to be rendered using the UBO
     void bindMeshDescriptorSets (
         vk::CommandBuffer cmdBuf,
@@ -216,7 +214,7 @@ public:
       : Renderer (app, rp)
     {
         std::vector<vk::DescriptorSetLayout> layouts = {
-                sceneDS, samplerDS, app->meshDSLayout()
+                sceneDS, samplerDS
             };
         this->_initPipeline(RenderMode::eNormalMapShading, layouts);
     }
