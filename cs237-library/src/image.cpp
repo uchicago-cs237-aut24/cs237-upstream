@@ -444,7 +444,7 @@ vk::Format toVkFormat (Channels chans, ChannelTy ty, bool isRGB)
         case ChannelTy::UNKNOWN: ERROR("unknown channel type");
         };
     case Channels::RGB: switch (ty) {
-        case ChannelTy::U8: return (isRGB ? vk::Format::eR8G8B8Srgb : vk::Format::eB8G8R8Unorm);
+        case ChannelTy::U8: return (isRGB ? vk::Format::eR8G8B8Srgb : vk::Format::eR8G8B8Unorm);
         case ChannelTy::S8: return vk::Format::eR8G8B8Sint;
         case ChannelTy::U16: return vk::Format::eR16G16B16Uint;
         case ChannelTy::S16: return vk::Format::eR16G16B16Sint;
@@ -459,7 +459,7 @@ vk::Format toVkFormat (Channels chans, ChannelTy ty, bool isRGB)
         default: ERROR("invalid channel type for BGR");
         };
     case Channels::RGBA: switch (ty) {
-        case ChannelTy::U8: return (isRGB ? vk::Format::eR8G8B8A8Srgb : vk::Format::eB8G8R8A8Unorm);
+        case ChannelTy::U8: return (isRGB ? vk::Format::eR8G8B8A8Srgb : vk::Format::eR8G8B8A8Unorm);
         case ChannelTy::S8: return vk::Format::eR8G8B8A8Sint;
         case ChannelTy::U16: return vk::Format::eR16G16B16A16Uint;
         case ChannelTy::S16: return vk::Format::eR16G16B16A16Sint;
