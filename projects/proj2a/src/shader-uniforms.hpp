@@ -41,7 +41,10 @@ using SceneUBO = cs237::UniformBuffer<SceneUB>;
 /// Per-instance data, which we communicate using push constants
 struct PushConsts {
     alignas(16) glm::mat4 toWorld;      ///< model transform maps to world space
-    alignas(16) glm::mat3 normToWorld;  ///< model transform for normal vectors
+    alignas(16) glm::mat4 normToWorld;  ///< model transform for normal vectors.  We
+                                        ///  represent this transform as a 4x4 matrix
+                                        ///  for alignment purposes, but only the upper
+                                        ///  3x3 is used in the shaders.
     alignas(16) glm::vec3 color;        ///< uniform color for object
 };
 
