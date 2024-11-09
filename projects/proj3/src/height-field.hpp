@@ -66,8 +66,8 @@ class HeightField {
     /// return the height-field value at the given row and column
     uint16_t valueAt (uint32_t row, uint32_t col) const;
 
-    /// return the world-space vertex for the given row and column of the heightfield
-    glm::vec3 const vertexAt (int row, int col) const
+    /// return the world-space position for the given row and column of the heightfield
+    glm::vec3 const posAt (int row, int col) const
     {
         return glm::vec3(
             this->_scaleX * float(col) - this->_halfWid,

@@ -46,7 +46,7 @@ using FrameUBO = cs237::UniformBuffer<FrameUB>;
 /// the per-light information used in computing lighting information in shadow
 /// mode.
 struct ShadowUB {
-    alignas(16) glm::mat4 shadowMat;    ///< world-space to light-space transform
+    alignas(16) glm::mat4 shadowM;      ///< world-space to light-space transform
     int lightID;                        ///< index of light being rendered
     float shadowFactor;                 ///< scaling factor for in-shadow fragments
 };

@@ -10,6 +10,7 @@
 
 set(SRCS
   app.cpp
+  ground.cpp
   height-field.cpp
   main.cpp
   mesh.cpp

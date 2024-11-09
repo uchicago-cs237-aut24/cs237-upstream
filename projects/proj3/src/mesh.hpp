@@ -39,6 +39,11 @@ struct Mesh {
     //!               has only one group
     Mesh (Proj3 *app, vk::PrimitiveTopology p, OBJ::Model const *model);
 
+    //! create a Mesh object by triangulating a height field
+    //! \param app    the owning app
+    //! \param hf     the height-field
+    Mesh (Proj3 *app, HeightField const *hf);
+
     //! Mesh destuctor
     ~Mesh ();
 
