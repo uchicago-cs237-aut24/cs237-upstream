@@ -31,6 +31,7 @@ friend class __detail::TextureBase;
 friend class Texture1D;
 friend class Texture2D;
 friend class DepthBuffer;
+friend class Attachment;
 
 public:
 

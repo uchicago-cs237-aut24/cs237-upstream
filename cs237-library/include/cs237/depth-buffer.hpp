@@ -77,7 +77,7 @@ private:
     vk::Image _image;
     vk::ImageView _imageView;
     vk::DeviceMemory _mem;      ///< the device memory object
-    vk::Sampler _sampler;       ///< sampler for reading from image
+    vk::Sampler _sampler;       ///< sampler for reading from the image
 
 };
 

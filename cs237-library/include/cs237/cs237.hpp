@@ -70,6 +70,7 @@ inline void ReportError (const char *file, int line, std::string const &msg)
 #include "cs237/buffer.hpp"
 #include "cs237/image.hpp"
 #include "cs237/texture.hpp"
+#include "cs237/attachment.hpp"
 #include "cs237/depth-buffer.hpp"
 
 /* geometric types */

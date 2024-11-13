@@ -238,8 +238,8 @@ public:
     using BufferType = SV;
 
     /// constructor
-    /// \param app  the owning application object
-    /// \param app  the number of vertices that can be stored in the buffer
+    /// \param app     the owning application object
+    /// \param nVerts  the number of vertices that can be stored in the buffer
     StorageVertexBuffer (Application *app, uint32_t nVerts)
     : Buffer (app, vk::BufferUsageFlagBits::eStorageBuffer | vk::BufferUsageFlagBits::eVertexBuffer, nVerts*sizeof(SV))
     { }
@@ -344,7 +344,6 @@ public:
     }
 
 };
-
 
 } // namespace cs237
 

@@ -249,7 +249,7 @@ protected:
         ///
         /// This constructor initializes the `win` and  synchronization components.
         //
-        FrameData (Window *w);
+        FrameData (Window *win);
 
         FrameData () = delete;
         FrameData (FrameData &) = delete;
