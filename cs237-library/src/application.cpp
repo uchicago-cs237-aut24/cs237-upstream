@@ -624,6 +624,7 @@ vk::Pipeline Application::createPipeline (
     vk::PipelineLayout layout,
     vk::RenderPass renderPass,
     uint32_t subPass,
+    vk::PipelineColorBlendStateCreateInfo const &blending,
     vk::ArrayProxy<vk::DynamicState> const &dynamic)
 {
     vk::PipelineInputAssemblyStateCreateInfo asmInfo(
@@ -659,6 +660,53 @@ vk::Pipeline Application::createPipeline (
         VK_FALSE); /* stencil-test enable */
         /* defaults for remaining fields */
 
+    vk::PipelineDynamicStateCreateInfo dynamicState(
+        {}, /* flags */
+        dynamic);
+
+    vk::GraphicsPipelineCreateInfo pipelineInfo(
+        {}, /* flags */
+        shaders->stages(), /* stages */
+        &vertexInfo, /* vertex-input state */
+        &asmInfo, /* input-assembly state */
+        {}, /* tesselation state */
+        &viewportState, /* viewport state */
+        &rasterizer, /* rasterization state */
+        &multisampling, /* multisample state */
+        &depthStencil, /* depth-stencil state */
+        &blending, /* color-blend state */
+        &dynamicState, /* dynamic state */
+        layout, /* layout */
+        renderPass, /* render pass */
+        0, /* subpass */
+        nullptr); /* base pipeline */
+
+    // create the pipeline
+    auto pipes = this->device().createGraphicsPipelines(
+        nullptr,
+        pipelineInfo);
+    if (pipes.result != vk::Result::eSuccess) {
+        ERROR("unable to create graphics pipeline!");
+    }
+    return pipes.value[0];
+}
+
+vk::Pipeline Application::createPipeline (
+    cs237::Shaders *shaders,
+    vk::PipelineVertexInputStateCreateInfo const &vertexInfo,
+    vk::PrimitiveTopology prim,
+    bool primRestart,
+    vk::ArrayProxy<vk::Viewport> const &viewports,
+    vk::ArrayProxy<vk::Rect2D> const &scissors,
+    bool depthClamp,
+    vk::PolygonMode polyMode,
+    vk::CullModeFlags cullMode,
+    vk::FrontFace front,
+    vk::PipelineLayout layout,
+    vk::RenderPass renderPass,
+    uint32_t subPass,
+    vk::ArrayProxy<vk::DynamicState> const &dynamic)
+{
     vk::PipelineColorBlendAttachmentState colorBlendAttachment(
         VK_FALSE, /* blend enable */
         vk::BlendFactor::eZero, vk::BlendFactor::eZero,
@@ -674,35 +722,23 @@ vk::Pipeline Application::createPipeline (
         colorBlendAttachment, /* attachments */
         { 0.0f, 0.0f, 0.0f, 0.0f }); /* blend constants */
 
-    vk::PipelineDynamicStateCreateInfo dynamicState(
-        {}, /* flags */
+    return this->createPipeline (
+        shaders,
+        vertexInfo,
+        prim,
+        primRestart,
+        viewports,
+        scissors,
+        depthClamp,
+        polyMode,
+        cullMode,
+        front,
+        layout,
+        renderPass,
+        subPass,
+        colorBlending,
         dynamic);
 
-    vk::GraphicsPipelineCreateInfo pipelineInfo(
-        {}, /* flags */
-        shaders->stages(), /* stages */
-        &vertexInfo, /* vertex-input state */
-        &asmInfo, /* input-assembly state */
-        {}, /* tesselation state */
-        &viewportState, /* viewport state */
-        &rasterizer, /* rasterization state */
-        &multisampling, /* multisample state */
-        &depthStencil, /* depth-stencil state */
-        &colorBlending, /* color-blend state */
-        &dynamicState, /* dynamic state */
-        layout, /* layout */
-        renderPass, /* render pass */
-        0, /* subpass */
-        nullptr); /* base pipeline */
-
-    // create the pipeline
-    auto pipes = this->device().createGraphicsPipelines(
-        nullptr,
-        pipelineInfo);
-    if (pipes.result != vk::Result::eSuccess) {
-        ERROR("unable to create graphics pipeline!");
-    }
-    return pipes.value[0];
 }
 
 /* TODO: define a ComputeShader class, since compute shaders

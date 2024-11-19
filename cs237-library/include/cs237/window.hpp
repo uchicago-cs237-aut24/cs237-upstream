@@ -104,15 +104,15 @@ public:
     /// Hide the window
     void hide ()
     {
-      glfwHideWindow (this->_win);
-      this->_isVis = false;
+        glfwHideWindow (this->_win);
+        this->_isVis = false;
     }
 
     /// Show the window (a no-op if it is already visible)
     void show ()
     {
-      glfwShowWindow (this->_win);
-      this->_isVis = true;
+        glfwShowWindow (this->_win);
+        this->_isVis = true;
     }
 
     /// virtual draw method provided by derived classes to draw the contents of the
@@ -218,6 +218,18 @@ protected:
         bool hasStencilBuffer () const
         {
             return this->dsBuf.has_value() && this->dsBuf->stencil;
+        }
+
+        /// \brief get the image view for the depth buffer
+        /// \return the depth-buffer image or None if there is no depth-buffer
+        std::optional<vk::ImageView> depthImageView ()
+        {
+            if (this->dsBuf.has_value()) {
+                return dsBuf->view;
+            } else {
+                // no depth buffer
+                return std::optional<vk::ImageView>();
+            }
         }
 
         /// \brief destroy the Vulkan state for the swap chain

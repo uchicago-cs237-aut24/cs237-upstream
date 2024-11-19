@@ -196,6 +196,53 @@ public:
         return this->_device.createPipelineLayout(layoutInfo);
     }
 
+    /// \brief Allocate a graphics pipeline with blending support
+    /// \param shaders     shaders for the pipeline
+    /// \param vertexInfo  vertex info
+    /// \param prim        primitive topology
+    /// \param primRestart true if primitive restart should be enabled
+    /// \param viewports   vector of viewports; ignored if the viewport state is dynamic
+    /// \param scissors    vector of scissor rectangles; ignored if the scissor state is dynamic
+    /// \param depthClamp  true if depth clamping is enabled
+    /// \param polyMode    polygon mode
+    /// \param cullMode    primitive culling mode
+    /// \param front       the winding order that defines the front face of a triangle
+    /// \param layout      the pipeline layout
+    /// \param renderPass  a render pass that is compatible with the render pass to be used
+    /// \param subPass     the index of the subpass in the render pass where the pipeline
+    ///                    will be used
+    /// \param blending    color-blending information
+    /// \param dynamic     vector that specifies which parts of the pipeline can be
+    ///                    dynamically set during the
+    /// \return the created pipeline
+    ///
+    /// This function creates a pipeline with the following properties:
+    ///
+    ///   - rasterization discard is disabled
+    ///   - depth bias is disabled
+    ///   - no multisampling
+    ///   - depth-test is enabled
+    ///   - depth-write is enabled
+    ///   - `LESS` is the depth-compare operation
+    ///   - bounds-test is disabled
+    ///   - stencil-test is disabled
+    vk::Pipeline createPipeline (
+        cs237::Shaders *shaders,
+        vk::PipelineVertexInputStateCreateInfo const &vertexInfo,
+        vk::PrimitiveTopology prim,
+        bool primRestart,
+        vk::ArrayProxy<vk::Viewport> const &viewports,
+        vk::ArrayProxy<vk::Rect2D> const &scissors,
+        bool depthClamp,
+        vk::PolygonMode polyMode,
+        vk::CullModeFlags cullMode,
+        vk::FrontFace front,
+        vk::PipelineLayout layout,
+        vk::RenderPass renderPass,
+        uint32_t subPass,
+        vk::PipelineColorBlendStateCreateInfo const &blending,
+        vk::ArrayProxy<vk::DynamicState> const &dynamic);
+
     /// \brief Allocate a graphics pipeline
     /// \param shaders     shaders for the pipeline
     /// \param vertexInfo  vertex info

@@ -26,11 +26,9 @@ Attachment::Attachment (
     auto device = app->device();
 
     vk::ImageAspectFlagBits aspect = vk::ImageAspectFlagBits::eColor;
-    vk::ImageLayout layout = vk::ImageLayout::eColorAttachmentOptimal;
 
     if (usage & vk::ImageUsageFlagBits::eDepthStencilAttachment) {
         // depth-buffer attachment
-        layout = vk::ImageLayout::eDepthStencilAttachmentOptimal;
         assert (false && "TODO: depth/stencil-buffer attachment support (aspect)");
     }
 
@@ -46,7 +44,7 @@ Attachment::Attachment (
         usage | vk::ImageUsageFlagBits::eSampled, /* usage should include "sampled" */
         vk::SharingMode::eExclusive, /* sharing mode */
         {},
-        layout); /* layout */
+        vk::ImageLayout::eUndefined); /* layout */
 
     this->_img = device.createImage(imageInfo);
 
