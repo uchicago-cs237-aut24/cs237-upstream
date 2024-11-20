@@ -32,6 +32,7 @@ friend class Texture1D;
 friend class Texture2D;
 friend class DepthBuffer;
 friend class Attachment;
+friend class DepthAttachment;
 
 public:
 
@@ -77,6 +78,30 @@ public:
     static std::vector<vk::LayerProperties> supportedLayers ()
     {
         return vk::enumerateInstanceLayerProperties();
+    }
+
+    /// \brief get the logical device
+    vk::Device device () const { return this->_device; }
+
+    /// get the physical-device properties pointer
+    const vk::PhysicalDeviceProperties *props () const
+    {
+        if (this->_propsCache == nullptr) {
+            this->_getPhysicalDeviceProperties();
+        }
+        return this->_propsCache;
+    }
+
+    /// \brief access function for the physical device limits
+    const vk::PhysicalDeviceLimits *limits () const { return &this->props()->limits; }
+
+    /// \brief access function for the physical device features
+    const vk::PhysicalDeviceFeatures *features () const
+    {
+        if (this->_featuresCache == nullptr) {
+            this->_getPhysicalDeviceFeatures();
+        }
+        return this->_featuresCache;
     }
 
     /// Information for creating a sampler object.  This is more limited than Vulkan's
@@ -130,30 +155,6 @@ public:
     /// \param info  a simplified sampler specification
     /// \return the created depth-texture sampler
     vk::Sampler createDepthSampler (SamplerInfo const &info);
-
-    /// \brief get the logical device
-    vk::Device device () const { return this->_device; }
-
-    /// get the physical-device properties pointer
-    const vk::PhysicalDeviceProperties *props () const
-    {
-        if (this->_propsCache == nullptr) {
-            this->_getPhysicalDeviceProperties();
-        }
-        return this->_propsCache;
-    }
-
-    /// \brief access function for the physical device limits
-    const vk::PhysicalDeviceLimits *limits () const { return &this->props()->limits; }
-
-    /// \brief access function for the physical device features
-    const vk::PhysicalDeviceFeatures *features () const
-    {
-        if (this->_featuresCache == nullptr) {
-            this->_getPhysicalDeviceFeatures();
-        }
-        return this->_featuresCache;
-    }
 
     /// \brief access function for the properties of an image format
     vk::FormatProperties formatProps (vk::Format fmt) const
@@ -491,7 +492,7 @@ protected:
     /// \param stencil  set to true if requesting stencil-buffer support
     /// \return the format that has the requested buffer support and the best precision.
     ///         Returns VK_FORMAT_UNDEFINED is `depth` and `stencil` are both false or
-    ///         if there s no depth-buffer support
+    ///         if there is no depth-buffer support
     vk::Format _depthStencilBufferFormat (bool depth, bool stencil);
 
     /// \brief A helper function to identify the queue-family indices for the

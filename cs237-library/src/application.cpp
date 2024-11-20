@@ -262,6 +262,7 @@ vk::Format Application::_findBestFormat (
 
 vk::Format Application::_depthStencilBufferFormat (bool depth, bool stencil)
 {
+/* TODO: perhaps we should cache the results for future calls? */
     if (!depth && !stencil) {
         return vk::Format::eUndefined;
     }

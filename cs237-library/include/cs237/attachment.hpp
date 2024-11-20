@@ -62,6 +62,28 @@ protected:
 
 };
 
+/// Depth-buffer attachment for off-screen rendering
+class DepthAttachment : public Attachment {
+public:
+
+    /// \brief Construct a depth-buffer attachment using the "best" format for
+    ///        a depth buffer
+    /// \param app    the owning application
+    /// \param wid    the width of the attachment
+    /// \param ht     the height of the attachment
+    /// \param fmt    the pixel format of the attachment
+    /// \param usage  the way that this attachment is going to be used
+    DepthAttachment (cs237::Application *app, uint32_t wid, uint32_t ht)
+    : Attachment (app, wid, ht,
+        app->_depthStencilBufferFormat(true, false),
+        vk::ImageUsageFlagBits::eDepthStencilAttachment)
+    { }
+
+    /// destructor
+    ~DepthAttachment () {};
+
+};
+
 } // namespace cs237
 
 #endif // !_CS237_ATTACHMENT_HPP_

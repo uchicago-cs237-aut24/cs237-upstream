@@ -1,0 +1,17 @@
+There are three uniform values that are used by the shaders:
+
+  [PC]  the per-mesh model transform + mesh color, which are
+        represented as push constants
+  [UBO] the uniform buffer that holds the per-frame transforms
+  [CMAP] the per-mesh color-map sampler
+  [SMAP] the depth-buffer sampler
+
+The first of these is defined per-object, while the third is per-frame.
+
+		PC      UBO	CMAP	SMAP
+depth.vert:	x        x
+depth.frag:
+dir-light.vert	x        x
+dir-light.frag	x        x	 x	 x
+
+We use two descriptor sets: Set 0 is the UBO+CMAP and Set 1 is the DMAP.

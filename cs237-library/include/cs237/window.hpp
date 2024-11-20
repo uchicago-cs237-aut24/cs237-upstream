@@ -205,7 +205,8 @@ protected:
         /// \brief return the number of buffers in the swap chain
         int size () const { return this->images.size(); }
 
-        /// \brief allocate frame buffers for a rendering pass
+        /// \brief allocate the frame buffers for the swap chain
+        /// \param renderPass  the render pass used to render to the frame buffer
         void initFramebuffers (vk::RenderPass renderPass);
 
         /// \brief does the swap-chain support a depth buffer?

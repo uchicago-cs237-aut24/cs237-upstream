@@ -19,7 +19,10 @@
 
 namespace cs237 {
 
-/// This class is a wrapper around the
+/* TODO: perhaps this class should be replaced in favor of DepthAttachment? */
+
+/// This class is a wrapper around the resources needed to implement a depth buffer
+/// that can sampled
 class DepthBuffer {
 public:
 
