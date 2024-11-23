@@ -64,7 +64,7 @@ Model::Model (std::string file)
     if (model->mtllibname != nullptr) {
         this->_mtlLibName = model->mtllibname;
         if (! __details::ReadMaterial (this->_path, this->_mtlLibName, this->_materials)) {
-            std::cerr << "warning: error reading material library \""
+            std::cerr << "Error [" << file << "] reading material library \""
                 << this->_mtlLibName << "\"" << std::endl;
             this->_materials.clear();
         }
@@ -85,6 +85,11 @@ Model::Model (std::string file)
     std::vector<uint32_t> indices;
     uint32_t idx;
     for (OBJgroup *grp = model->groups;  grp != nullptr;  grp = grp->next) {
+        if (grp->numtriangles == 0) {
+            std::cout << "Warning [" << file << "]: skipping empty group '"
+                << grp->name << "'\n";
+            continue;
+        }
         for (uint32_t i = 0;  i < grp->numtriangles;  i++) {
             for (int j = 0;  j < 3;  j++) {
                 OBJtriangle *tri = &(model->triangles[i]);
