@@ -12,6 +12,7 @@ set(SRCS
   aabb.cpp
   application.cpp
   attachment.cpp
+  cube.cpp
   depth-buffer.cpp
   image.cpp
   json.cpp
@@ -21,6 +22,7 @@ set(SRCS
   obj-reader.cpp
   obj.cpp
   shader.cpp
+  sphere.cpp
   texture.cpp
   window.cpp)
 

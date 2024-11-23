@@ -76,6 +76,7 @@ inline void ReportError (const char *file, int line, std::string const &msg)
 /* geometric types */
 #include "cs237/aabb.hpp"
 #include "cs237/plane.hpp"
+#include "cs237/gobjects.hpp"
 
 /***** a wrapper for printing GLM vectors *****/
 template<glm::length_t L, typename T, glm::qualifier Q>
