@@ -39,8 +39,8 @@ struct LightingUB {
     alignas(16) glm::vec3 lightIntensity;       ///< intensity of directional light
     alignas(16) glm::vec3 ambIntensity;         ///< intensity of ambient light
     float shadowFactor;                         ///< scaling for shadowed fragments
-/** HINT: you may want to add the flags for enabling/disabling lighting modes
- ** to this structure (in which case, it becomes a per-frame buffer).
+/** HINT: you may want to add the following flags for enabling/disabling lighting
+ ** modes to this structure (in which case, it becomes a per-frame buffer).
  **
     int enableDirLight;                         ///< enable directional light
     int enableSpotLights;                       ///< enable spot lights

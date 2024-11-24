@@ -161,13 +161,18 @@ bool Scene::load (std::string const &path)
     // load the lighting information
     const json::Object *lighting = rootObj->fieldAsObject ("lighting");
     if ((lighting == nullptr)
+    ||  loadVec3 (lighting->fieldAsObject ("direction"), this->_lightDir)
+    ||  loadColor (lighting->fieldAsObject ("intensity"), this->_lightI)
     ||  loadColor (lighting->fieldAsObject ("ambient"), this->_ambI)
     ||  loadFloat (lighting->fieldAsNumber ("shadow"), this->_shadowFactor)) {
         std::cerr << "Invalid scene description in \"" << path
             << "\"; bad lighting\n";
         return true;
     }
-    // make sure that the ambient-light intensity is in 0..1 range
+    // make sure that the light direction is a unit vector
+    this->_lightDir = glm::normalize(this->_lightDir);
+    // make sure that color values are in 0..1 range
+    this->_lightI = glm::clamp(this->_lightI, 0.0f, 1.0f);
     this->_ambI = glm::clamp(this->_ambI, 0.0f, 1.0f);
     // get the array of spot lights; we allow at most 4 lights
     json::Array const *lights = lighting->fieldAsArray("lights");

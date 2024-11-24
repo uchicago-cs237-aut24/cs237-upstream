@@ -13,7 +13,6 @@
 #include "cs237/cs237.hpp"
 #include "shader-uniforms.hpp"
 #include "vertex.hpp"
-#include "vulkan/vulkan_core.h"
 #include "mesh.hpp"
 #include <array>
 #include <vector>
@@ -273,9 +272,22 @@ MeshFactory::MeshFactory (Proj4 *app, int nMeshes)
             nullptr); /* samplers */
     }
 
+    // we allow undefined samplers, since not every object has every kind of
+    // texture.  To enable this mode, we have to pass the address of a
+    // DescriptorSetLayoutBindingFlagsCreateInfo struct as the pNext field
+    // of the DescriptorSetLayoutCreateInfo struct
+    std::array<vk::DescriptorBindingFlags,5> bindingFlags = {
+            vk::DescriptorBindingFlags{},
+            vk::DescriptorBindingFlagBits::ePartiallyBound,
+            vk::DescriptorBindingFlagBits::ePartiallyBound,
+            vk::DescriptorBindingFlagBits::ePartiallyBound,
+            vk::DescriptorBindingFlagBits::ePartiallyBound
+        };
+    vk::DescriptorSetLayoutBindingFlagsCreateInfo bindingFlagInfo(bindingFlags);
     vk::DescriptorSetLayoutCreateInfo layoutInfo(
         {}, /* flags */
-        layoutBindings); /* bindings */
+        layoutBindings,
+        &bindingFlagInfo); /* bindings */
     this->_layout = app->device().createDescriptorSetLayout(layoutInfo);
 
 }
@@ -284,5 +296,78 @@ MeshFactory::~MeshFactory ()
 {
     this->_app->device().destroyDescriptorSetLayout(this->_layout);
     this->_app->device().destroyDescriptorPool(this->_dsPool);
+
+}
+
+void MeshFactory::_allocDS (Mesh *mesh)
+{
+    vk::DescriptorSetAllocateInfo allocInfo(this->_dsPool, this->_layout);
+    mesh->descSet = (this->_app->device().allocateDescriptorSets(allocInfo))[0];
+
+    auto uboInfo = mesh->ubo->descInfo();
+    std::vector<vk::WriteDescriptorSet> descWrites = {
+            vk::WriteDescriptorSet(
+                mesh->descSet, /* descriptor set */
+                Mesh::kUBOBind, /* binding */
+                0, /* array element */
+                vk::DescriptorType::eUniformBuffer, /* descriptor type */
+                nullptr, /* image info */
+                uboInfo, /* buffer info */
+                nullptr) /* texel buffer view */
+        };
+
+    if (mesh->albedoSrc == MtlPropertySrc::eTexture) {
+        auto info = mesh->albedoTexture.imageInfo();
+        descWrites.push_back(
+            vk::WriteDescriptorSet(
+                mesh->descSet,
+                Mesh::kAlbedoBind, /* binding */
+                0, /* array element */
+                vk::DescriptorType::eCombinedImageSampler, /* descriptor type */
+                info,
+                nullptr, /* buffer info */
+                nullptr)); /* texel buffer view */
+    }
+
+    if (mesh->emissiveSrc == MtlPropertySrc::eTexture) {
+        auto info = mesh->emissiveTexture.imageInfo();
+        descWrites.push_back(
+            vk::WriteDescriptorSet(
+                mesh->descSet,
+                Mesh::kEmissiveBind, /* binding */
+                0, /* array element */
+                vk::DescriptorType::eCombinedImageSampler, /* descriptor type */
+                info,
+                nullptr, /* buffer info */
+                nullptr)); /* texel buffer view */
+    }
+
+    if (mesh->specularSrc == MtlPropertySrc::eTexture) {
+        auto info = mesh->specularTexture.imageInfo();
+        descWrites.push_back(
+            vk::WriteDescriptorSet(
+                mesh->descSet,
+                Mesh::kSpecularBind, /* binding */
+                0, /* array element */
+                vk::DescriptorType::eCombinedImageSampler, /* descriptor type */
+                info,
+                nullptr, /* buffer info */
+                nullptr)); /* texel buffer view */
+    }
+
+    if (mesh->nMap.isDefined()) {
+        auto info = mesh->nMap.imageInfo();
+        descWrites.push_back(
+            vk::WriteDescriptorSet(
+                mesh->descSet,
+                Mesh::kNormalBind, /* binding */
+                0, /* array element */
+                vk::DescriptorType::eCombinedImageSampler, /* descriptor type */
+                info,
+                nullptr, /* buffer info */
+                nullptr)); /* texel buffer view */
+    }
+
+    this->_app->device().updateDescriptorSets (descWrites, nullptr);
 
 }

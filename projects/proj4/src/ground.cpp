@@ -174,11 +174,5 @@ Mesh::Mesh (Proj4 *app, HeightField const *hf)
         this->nMap.define(app, hf->normalMap());
     }
 
-/*
-    vk::DescriptorSet descSet;          ///< the descriptor set for the material
-                                        ///  UBO and samplers
-    MaterialUBO *ubo;                   ///< material-properties UBO
-*/
-
     this->initUBO(app);
 }

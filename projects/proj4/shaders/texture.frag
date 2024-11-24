@@ -27,10 +27,7 @@ layout (set = 0, binding = 0) uniform LightingUB {
     vec3 lightDir;              ///< unit vector pointing toward light
     vec3 lightIntensity;        ///< intensity of directional light
     vec3 ambIntensity;          ///< intensity of ambient light
-    bool enableDirLight;        ///< enable directional light
-    bool enableSpotLights;      ///< enable spot lights
-    bool enableEmissiveLighting; ///< enable emissive lighting
-    bool enableShadows;         ///< enable shadows (extra credit)
+    float shadowFactor;         ///< scaling for shadowed fragments
 } lightingUBO;
 
 layout (set = 1, binding = 0) uniform MaterialUB {
@@ -54,12 +51,12 @@ layout (location = 0) out vec4 fragColor;
 
 void main ()
 {
-  // renormalize the surface normal
+    // renormalize the surface normal
     vec3 norm = normalize(fNorm);
 
-  // direct-lighting contribution
-    vec3 intensity =
-        max(dot(lightingUBO.lightDir, norm), 0.0) * lightingUBO.lightIntensity;
+    // direct-lighting contribution
+    float lightFactor = max(dot(lightingUBO.lightDir, norm), 0.0);
+    vec3 intensity = lightingUBO.ambIntensity + lightFactor * lightingUBO.lightIntensity;
 
   // surface color
     vec3 albedo;
@@ -71,6 +68,5 @@ void main ()
         albedo = vec3(1,1,1);
     }
 
-    fragColor = vec4(clamp ((lightingUBO.ambIntensity + intensity) * albedo, 0, 1), 1);
-
+    fragColor = vec4(clamp (intensity * albedo, 0, 1), 1);
 }

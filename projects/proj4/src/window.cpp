@@ -79,6 +79,7 @@ Proj4Window::~Proj4Window ()
     // clean up other resources
     device.destroyDescriptorPool(this->_descPool);
     device.destroyDescriptorSetLayout(this->_lightingLayout);
+    delete this->_lightingUBO;
     delete this->_meshFactory;
 
     // delete the mesh data
@@ -324,15 +325,19 @@ void Proj4Window::_initDescriptorPools ()
         this->_lightingLayout = device.createDescriptorSetLayout(layoutInfo);
     }
 
-    // allocate the lighting descriptor set
-    vk::DescriptorSetAllocateInfo allocInfo(this->_descPool, this->_lightingLayout);
-    this->_lightingDS = (this->_app->device().allocateDescriptorSets(allocInfo))[0];
-
 }
 
 void Proj4Window::_initLighting ()
 {
     Scene const *scene = this->_scene();
+
+    if (this->app()->verbose()) {
+        std::cout << "# Lighting UB:\n"
+            << "## lightDir = " << to_string(-scene->lightDir()) << "\n"
+            << "## lightIntensity = " << to_string(scene->lightIntensity()) << "\n"
+            << "## ambIntensity = " << to_string(scene->ambientLight()) << "\n"
+            << "## shadowFactor = " << scene->shadowFactor() << "\n";
+    }
 
     LightingUB ub = {
             -scene->lightDir(), /* negate direction */
@@ -341,7 +346,25 @@ void Proj4Window::_initLighting ()
             scene->shadowFactor()
         };
 
-    this->_lightingUBO = new cs237::UniformBuffer<LightingUB>(this->app());
+    this->_lightingUBO = new cs237::UniformBuffer<LightingUB>(this->app(), ub);
+
+    // allocate the lighting descriptor set
+    vk::DescriptorSetAllocateInfo allocInfo(this->_descPool, this->_lightingLayout);
+    this->_lightingDS = (this->_app->device().allocateDescriptorSets(allocInfo))[0];
+
+    // update the lighting descriptor set
+    auto lightingInfo = this->_lightingUBO->descInfo();
+    vk::WriteDescriptorSet descWrite(
+        this->_lightingDS, /* descriptor set */
+        0, /* binding */
+        0, /* array element */
+        vk::DescriptorType::eUniformBuffer, /* descriptor type */
+        nullptr, /* image info */
+        lightingInfo, /* buffer info */
+        nullptr); /* texel buffer view */
+
+    this->_app->device().updateDescriptorSets (descWrite, nullptr);
+
 }
 
 void Proj4Window::_invalidateFrameUBOs ()
@@ -391,6 +414,12 @@ void Proj4Window::_recordForwardCommands (Proj4Window::FrameData *frame)
             cmdBuf.bindPipeline(
                 vk::PipelineBindPoint::eGraphics,
                 this->_texturePipeline.pipe);
+            cmdBuf.bindDescriptorSets(
+                vk::PipelineBindPoint::eGraphics,
+                this->_texturePipeline.layout,
+                0, /* first set */
+                this->_lightingDS,
+                nullptr);
             break;
         default:
             ERROR("Proj4Window::_recordForwardCommands: invalid render mode");
@@ -412,16 +441,12 @@ void Proj4Window::_recordForwardCommands (Proj4Window::FrameData *frame)
                         sizeof(WireFramePushConsts),
                         &pc);
                 } else { // texture mode
-                    std::array<vk::DescriptorSet,2> ds = {
-                            this->_lightingDS,
-                            mesh->descSet
-                        };
                     // bind the descriptors for the object
                     cmdBuf.bindDescriptorSets(
                         vk::PipelineBindPoint::eGraphics,
                         this->_texturePipeline.layout,
-                        0, /* first set */
-                        ds, /* descriptor sets */
+                        1, /* second set */
+                        mesh->descSet, /* descriptor sets */
                         nullptr);
                     // push constants for the mesh
                     TexturePushConsts pc = {

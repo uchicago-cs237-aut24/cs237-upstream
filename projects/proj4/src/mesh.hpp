@@ -130,6 +130,13 @@ struct Mesh {
     /// `vkCmdDrawIndexed`.
     void draw (vk::CommandBuffer cmdBuf);
 
+    /// binding indices for mesh uniforms
+    static constexpr uint32_t kUBOBind = 0;
+    static constexpr uint32_t kAlbedoBind = 1;
+    static constexpr uint32_t kEmissiveBind = 2;
+    static constexpr uint32_t kSpecularBind = 3;
+    static constexpr uint32_t kNormalBind = 4;
+
 };
 
 /***** class MeshFactory *****/
@@ -176,12 +183,8 @@ private:
     /// the descriptor-set layout for the per-mesh sampler descriptor sets.
     vk::DescriptorSetLayout _layout;
 
-    // allocate the descriptor set for the mesh
-    void _allocDS (Mesh *mesh)
-    {
-        vk::DescriptorSetAllocateInfo allocInfo(this->_dsPool, this->_layout);
-        mesh->descSet = (this->_app->device().allocateDescriptorSets(allocInfo))[0];
-    }
+    /// allocate the descriptor set for the mesh
+    void _allocDS (Mesh *mesh);
 
 };
 
