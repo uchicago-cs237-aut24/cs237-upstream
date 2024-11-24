@@ -338,10 +338,15 @@ void Application::_createLogicalDevice ()
         kDeviceExts.push_back("VK_KHR_portability_subset");
     }
 
-    // for now, we are only enabling a couple of extra features
+    // for now, we are only enabling a few extra features
     vk::PhysicalDeviceFeatures deviceFeatures{};
     deviceFeatures.fillModeNonSolid = VK_TRUE;
     deviceFeatures.samplerAnisotropy = VK_TRUE;
+
+    // allow descriptor sets to have undefined descriptors (as long as they
+    // are not dynamically used)
+    vk::PhysicalDeviceDescriptorIndexingFeatures indexingFeatures{};
+    indexingFeatures.descriptorBindingPartiallyBound = VK_TRUE;
 
     // initialize the create info
     vk::DeviceCreateInfo createInfo(
@@ -351,7 +356,8 @@ void Application::_createLogicalDevice ()
             ? kValidationLayers
             : vk::ArrayProxyNoTemporaries<const char * const>()),
         kDeviceExts, /* enabled extension names */
-        &deviceFeatures); /* enabled device features */
+        &deviceFeatures, /* enabled device features */
+        &indexingFeatures); /* pNext */
 
     // create the logical device
     this->_device = this->_gpu.createDevice(createInfo);
