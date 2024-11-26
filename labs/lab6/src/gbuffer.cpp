@@ -146,36 +146,32 @@ void GBuffer::initDescriptorSet ()
     std::array<vk::WriteDescriptorSet,kNumBuffers> descWrites;
 
     // write the albedo descriptor set
-    {
-        auto imgInfo = vk::DescriptorImageInfo(
-            this->_sampler,
-            this->_albedo->imageView(),
-            vk::ImageLayout::eShaderReadOnlyOptimal);
-        descWrites[0] = vk::WriteDescriptorSet(
-            this->_descSet, /* descriptor set */
-            kGBufAlbedoBind, /* binding */
-            0, /* array element */
-            vk::DescriptorType::eCombinedImageSampler, /* descriptor type */
-            imgInfo, /* image info */
-            nullptr, /* buffer info */
-            nullptr); /* texel buffer view */
-    }
+    auto albedoImageInfo = vk::DescriptorImageInfo(
+        this->_sampler,
+        this->_albedo->imageView(),
+        vk::ImageLayout::eShaderReadOnlyOptimal);
+    descWrites[0] = vk::WriteDescriptorSet(
+        this->_descSet, /* descriptor set */
+        kGBufAlbedoBind, /* binding */
+        0, /* array element */
+        vk::DescriptorType::eCombinedImageSampler, /* descriptor type */
+        albedoImageInfo, /* image info */
+        nullptr, /* buffer info */
+        nullptr); /* texel buffer view */
 
     // write the normal descriptor set
-    {
-        auto imgInfo = vk::DescriptorImageInfo(
-            this->_sampler,
-            this->_normal->imageView(),
-            vk::ImageLayout::eShaderReadOnlyOptimal);
-        descWrites[1] = vk::WriteDescriptorSet(
-            this->_descSet, /* descriptor set */
-            kGBufNormalBind, /* binding */
-            0, /* array element */
-            vk::DescriptorType::eCombinedImageSampler, /* descriptor type */
-            imgInfo, /* image info */
-            nullptr, /* buffer info */
-            nullptr); /* texel buffer view */
-    }
+    auto normalImageInfo = vk::DescriptorImageInfo(
+        this->_sampler,
+        this->_normal->imageView(),
+        vk::ImageLayout::eShaderReadOnlyOptimal);
+    descWrites[1] = vk::WriteDescriptorSet(
+        this->_descSet, /* descriptor set */
+        kGBufNormalBind, /* binding */
+        0, /* array element */
+        vk::DescriptorType::eCombinedImageSampler, /* descriptor type */
+        normalImageInfo, /* image info */
+        nullptr, /* buffer info */
+        nullptr); /* texel buffer view */
 
     this->_app->device().updateDescriptorSets(descWrites, nullptr);
 
