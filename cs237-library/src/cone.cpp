@@ -61,6 +61,25 @@ OBJ::Group *cone (
     // angle around the Z axis between the start and end of a slice
     double sliceAngle = (2.0 * __detail::kPi) / double(slices);
 
+  // construct a rotation matrix to orient the cone
+    dir = glm::normalize(dir);
+    glm::vec3 xAxis, zAxis;
+    float magX = fabsf(dir.x), magY = fabsf(dir.y), magZ = fabsf(dir.z);
+    if ((magX <= magY) && (magX <= magZ)) {
+        zAxis = glm::normalize(cross(glm::vec3(1.0f, 0.0f, 0.0f), dir));
+        xAxis = glm::normalize(cross(dir, zAxis));
+    }
+    else if ((magY <= magX) && (magY <= magZ)) {
+        zAxis = glm::normalize(cross(glm::vec3(0.0f, 1.0f, 0.0f), dir));
+        xAxis = glm::normalize(cross(dir, zAxis));
+    }
+    else {
+        assert ((magZ <= magX) && (magZ <= magY));
+        zAxis = glm::normalize(cross(glm::vec3(0.0f, 0.0f, 1.0f), dir));
+        xAxis = glm::normalize(cross(dir, zAxis));
+    }
+    glm::mat3 R(xAxis, dir, zAxis);
+
     /********** Vertices **********/
 
     // construct a mesh with the apex at the origin and the center of the
@@ -68,7 +87,7 @@ OBJ::Group *cone (
     int idx = 0;
     // start at the apex
     for (int i = 0;  i < nApexVerts;  ++i) {
-        grp->verts[idx++] = glm::vec3(0, 0, 0);
+        grp->verts[idx++] = pos;
     }
     for (int stkIdx = 0;  stkIdx < stacks;  ++stkIdx) {
         auto s = float(stkIdx + 1) / float(stacks);
@@ -78,7 +97,7 @@ OBJ::Group *cone (
             auto theta = double(sliceIdx) * sliceAngle;
             auto x = r * float(std::cos(theta));
             auto z = r * float(std::sin(theta));
-            grp->verts[idx++] = glm::vec3(x, y, z);
+            grp->verts[idx++] = R * glm::vec3(x, y, z) + pos;
         }
     }
     // if we have normals, then we have two copies of each base-edge vertex
@@ -90,12 +109,11 @@ OBJ::Group *cone (
     }
     // the base-center vertex
     for (int i = 0;  i < nBaseCenterVerts;  ++i) {
-        grp->verts[idx++] = glm::vec3(0, height, 0);
+        grp->verts[idx++] = R * glm::vec3(0, height, 0) + pos;
     }
     assert (idx == nVerts && "incorrect number of vertices");
 
     /********** Normals **********/
-
 
     if (hasNorms) {
         // the normals along a slice edge are all the same, so the outer loop
@@ -104,13 +122,13 @@ OBJ::Group *cone (
             auto theta = double(sliceIdx) * sliceAngle;
             auto x = radius * float(std::cos(theta));
             auto z = radius * float(std::sin(theta));
-            glm::vec3 norm = glm::normalize(glm::vec3(x, -float(height), z));
+            glm::vec3 norm = glm::normalize(R * glm::vec3(x, -float(height), z));
             for (int stkIdx = 0;  stkIdx <= stacks;  ++stkIdx) {
                 grp->norms[stkIdx * slices + sliceIdx] = norm;
             }
         }
         // normals for base
-        glm::vec3 norm = glm::vec3(0, 1, 0);
+        glm::vec3 norm = dir;
         for (int i = nApexVerts + stacks * slices; i < nVerts;  ++i) {
             grp->norms[i] = norm;
         }
