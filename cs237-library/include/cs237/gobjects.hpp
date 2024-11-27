@@ -61,7 +61,7 @@ inline bool hasTextureCoords (VertexAttrs attrs)
 /// \param width   the width of a side
 /// \return a `OBJ::Group` object that holds the vertex data for the cube.  Returns
 ///         `nullptr` if the width is not greater than zero.
-OBJ::Group *cube (VertexAttrs attrs, float center, float width);
+OBJ::Group *cube (VertexAttrs attrs, glm::vec3 center, float width);
 
 /// create a mesh  to represent a sphere centered at the origin
 /// \param attrs   specify the attributes of the sphere's vertices

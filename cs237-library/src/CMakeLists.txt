@@ -12,6 +12,7 @@ set(SRCS
   aabb.cpp
   application.cpp
   attachment.cpp
+  cone.cpp
   cube.cpp
   depth-buffer.cpp
   image.cpp

@@ -42,9 +42,9 @@ static void _initFace (
     grp->indices[ix++] = vert+3;
 
     // face normal vector
-    glm::vec3 v3 = cross(v1, v2);
+    glm::vec3 v3 = normalize(cross(v1, v2));
     // lower-left corner of face
-    glm::vec3 origin = -0.5 * (v1 + v2 - v3);
+    glm::vec3 origin = -0.5 * (v1 + v2 - 0.5 * v3);
 
     // vertex positions in CCW order
     grp->verts[vert+0] = origin; // lower-left corner

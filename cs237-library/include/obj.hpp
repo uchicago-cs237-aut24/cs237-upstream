@@ -78,6 +78,17 @@ struct Group {
     glm::vec2           *txtCoords;     ///< array of nVerts texture coordinates (or nullptr)
     uint32_t            *indices;       ///< array of nIndices element indices that can be used
                                         ///  to render the group
+
+    Group () : verts(nullptr), norms(nullptr), txtCoords(nullptr), indices(nullptr) { }
+
+    ~Group ()
+    {
+        if (this->verts != nullptr) { delete[] this->verts; }
+        if (this->norms != nullptr) { delete[] this->norms; }
+        if (this->txtCoords != nullptr) { delete[] this->txtCoords; }
+        if (this->indices != nullptr) { delete[] this->indices; }
+    }
+
 }; // struct Group
 
 /// A model from an OBJ file

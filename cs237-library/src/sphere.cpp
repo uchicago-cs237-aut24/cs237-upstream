@@ -65,8 +65,8 @@ OBJ::Group *sphere (
     for (int i = 0;  i < nPolarVerts;  ++i) {
         grp->verts[idx++] = glm::vec3(0, -radius, 0);
     }
-    for (int stackIdx = 0;  stackIdx < stacks;  ++stackIdx) {
-        double phi = __detail::kPi - double(stackIdx + 1) * stackAngle;
+    for (int stkIdx = 1;  stkIdx < stacks;  ++stkIdx) {
+        double phi = __detail::kPi - double(stkIdx) * stackAngle;
         double sinPhi = std::sin(phi);
         double cosPhi = std::cos(phi);
         for (int sliceIdx = 0;  sliceIdx < slices;  ++sliceIdx) {
@@ -89,7 +89,7 @@ OBJ::Group *sphere (
         // the normal vectors are just the vertices of the unit sphere
         float scale = 1.0 / radius;
         for (int i = 0;  i < nVerts;  ++i) {
-            grp->norms[i] = grp->verts[i];
+            grp->norms[i] = glm::normalize(grp->verts[i]);
         }
     }
 
@@ -103,8 +103,8 @@ OBJ::Group *sphere (
             grp->txtCoords[idx++] = glm::vec2(float(i+1) / float(slices), 0.0);
         }
         // texture coordinates for intermediate vertices
-        for (int stackIdx = 1;  stackIdx < stacks;  ++stackIdx) {
-            float t = float(stackIdx) / float(stacks);
+        for (int stkIdx = 1;  stkIdx < stacks;  ++stkIdx) {
+            float t = float(stkIdx) / float(stacks);
             for (int i = 0;  i < slices;  ++i) {
                 grp->txtCoords[idx++] = glm::vec2(float(i+1) / float(slices), t);
             }
@@ -139,9 +139,9 @@ OBJ::Group *sphere (
     }
 
     // triangulate the quads for each stack from bottom to top
-    for (int stackIdx = 1;  stackIdx < stacks - 1;  ++stackIdx) {
-        uint32_t j0 = (stackIdx - 1) * slices + nPolarVerts;
-        uint32_t j1 = stackIdx * slices + nPolarVerts;
+    for (int stkIdx = 1;  stkIdx < stacks - 1;  ++stkIdx) {
+        uint32_t j0 = (stkIdx - 1) * slices + nPolarVerts;
+        uint32_t j1 = stkIdx * slices + nPolarVerts;
         for (int sliceIdx = 0;  sliceIdx < slices;  ++sliceIdx) {
             // the indices of the quad
             uint32_t i0 = j0 + sliceIdx;
