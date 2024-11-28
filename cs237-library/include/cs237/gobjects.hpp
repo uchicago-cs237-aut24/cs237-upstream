@@ -56,12 +56,54 @@ inline bool hasTextureCoords (VertexAttrs attrs)
     return ((static_cast<uint32_t>(attrs) & kVAttrTCBit) != 0);
 }
 
+/// a geometric object
+struct Obj {
+    std::string name;           ///< object name ("cube", etc.)
+    uint32_t nVerts;            ///< the number of vertices in this group.
+    uint32_t nIndices;          ///< the number of indices (3 * number of triangles)
+    glm::vec3 *verts;           ///< array of nVerts vertex coordinates
+    glm::vec3 *norms;           ///< array of nVerts normal vectors (or nullptr)
+    glm::vec2 *txtCoords;       ///< array of nVerts texture coordinates (or nullptr)
+    uint32_t *indices;          ///< array of nIndices element indices that can be used
+                                ///  to render the group
+
+    Obj ()
+    : nVerts(0), nIndices(0),
+      verts(nullptr), norms(nullptr), txtCoords(nullptr),
+      indices(nullptr)
+    { }
+
+    Obj (Obj &) = delete;
+    Obj (Obj const &) = delete;
+    Obj (Obj &&) = delete;
+
+    Obj (std::string_view s)
+    : name(std::string(s)), nVerts(0), nIndices(0),
+      verts(nullptr), norms(nullptr), txtCoords(nullptr),
+      indices(nullptr)
+    { }
+
+    Obj (std::string_view s, uint32_t nv, uint32_t ni)
+    : name(std::string(s)), nVerts(nv), nIndices(ni),
+      verts(new glm::vec3[nv]), norms(nullptr), txtCoords(nullptr),
+      indices(new uint32_t[ni])
+    { }
+
+    ~Obj ()
+    {
+        if (this->verts != nullptr) { delete [] this->verts; }
+        if (this->norms != nullptr) { delete [] this->norms; }
+        if (this->txtCoords != nullptr) { delete [] this->txtCoords; }
+        if (this->indices != nullptr) { delete [] this->indices; }
+    }
+};
+
 /// construct an axis-aligned cube centered at the origin
 /// \param center  the cube's center
 /// \param width   the width of a side
 /// \return a `OBJ::Group` object that holds the vertex data for the cube.  Returns
 ///         `nullptr` if the width is not greater than zero.
-OBJ::Group *cube (VertexAttrs attrs, glm::vec3 center, float width);
+Obj *cube (VertexAttrs attrs, glm::vec3 center, float width);
 
 /// create a mesh  to represent a sphere centered at the origin
 /// \param attrs   specify the attributes of the sphere's vertices
@@ -75,7 +117,7 @@ OBJ::Group *cube (VertexAttrs attrs, glm::vec3 center, float width);
 ///         `nullptr` if the radius is not greater than zero.
 ///
 /// Note that the vertices of the mesh lie on the surface of the sphere.
-OBJ::Group *sphere (
+Obj *sphere (
     VertexAttrs attrs,
     glm::vec3 center,
     float radius,
@@ -97,7 +139,7 @@ OBJ::Group *sphere (
 /// Note that the vertices of the mesh lie on the surface of the cone.  To produce
 /// a mesh that contains the cone, you need to scale the radius by
 /// \f$\frac{1}{\cos(\frac{2\pi}{\mathit{slices}})}\f$.
-OBJ::Group *cone (
+Obj *cone (
     VertexAttrs attrs,
     glm::vec3 pos,
     glm::vec3 dir,

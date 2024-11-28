@@ -20,7 +20,7 @@ namespace gobj {
  * for a discussion of this method (and others).
  */
 
-OBJ::Group *sphere (
+Obj *sphere (
     VertexAttrs attrs,
     glm::vec3 center,
     float radius,

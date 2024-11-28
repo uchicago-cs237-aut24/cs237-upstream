@@ -316,54 +316,58 @@ void MeshFactory::_allocDS (Mesh *mesh)
                 nullptr) /* texel buffer view */
         };
 
+    vk::DescriptorImageInfo albedoInfo;
     if (mesh->albedoSrc == MtlPropertySrc::eTexture) {
-        auto info = mesh->albedoTexture.imageInfo();
+        albedoInfo = mesh->albedoTexture.imageInfo();
         descWrites.push_back(
             vk::WriteDescriptorSet(
                 mesh->descSet,
                 Mesh::kAlbedoBind, /* binding */
                 0, /* array element */
                 vk::DescriptorType::eCombinedImageSampler, /* descriptor type */
-                info,
+                albedoInfo,
                 nullptr, /* buffer info */
                 nullptr)); /* texel buffer view */
     }
 
+    vk::DescriptorImageInfo emissiveInfo;
     if (mesh->emissiveSrc == MtlPropertySrc::eTexture) {
-        auto info = mesh->emissiveTexture.imageInfo();
+        emissiveInfo = mesh->emissiveTexture.imageInfo();
         descWrites.push_back(
             vk::WriteDescriptorSet(
                 mesh->descSet,
                 Mesh::kEmissiveBind, /* binding */
                 0, /* array element */
                 vk::DescriptorType::eCombinedImageSampler, /* descriptor type */
-                info,
+                emissiveInfo,
                 nullptr, /* buffer info */
                 nullptr)); /* texel buffer view */
     }
 
+    vk::DescriptorImageInfo specularInfo;
     if (mesh->specularSrc == MtlPropertySrc::eTexture) {
-        auto info = mesh->specularTexture.imageInfo();
+        specularInfo = mesh->specularTexture.imageInfo();
         descWrites.push_back(
             vk::WriteDescriptorSet(
                 mesh->descSet,
                 Mesh::kSpecularBind, /* binding */
                 0, /* array element */
                 vk::DescriptorType::eCombinedImageSampler, /* descriptor type */
-                info,
+                specularInfo,
                 nullptr, /* buffer info */
                 nullptr)); /* texel buffer view */
     }
 
+    vk::DescriptorImageInfo normalInfo;
     if (mesh->nMap.isDefined()) {
-        auto info = mesh->nMap.imageInfo();
+        normalInfo = mesh->nMap.imageInfo();
         descWrites.push_back(
             vk::WriteDescriptorSet(
                 mesh->descSet,
                 Mesh::kNormalBind, /* binding */
                 0, /* array element */
                 vk::DescriptorType::eCombinedImageSampler, /* descriptor type */
-                info,
+                normalInfo,
                 nullptr, /* buffer info */
                 nullptr)); /* texel buffer view */
     }

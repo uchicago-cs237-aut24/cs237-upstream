@@ -81,13 +81,8 @@ struct Group {
 
     Group () : verts(nullptr), norms(nullptr), txtCoords(nullptr), indices(nullptr) { }
 
-    ~Group ()
-    {
-        if (this->verts != nullptr) { delete[] this->verts; }
-        if (this->norms != nullptr) { delete[] this->norms; }
-        if (this->txtCoords != nullptr) { delete[] this->txtCoords; }
-        if (this->indices != nullptr) { delete[] this->indices; }
-    }
+    // note that deallocation of the group's memory is handled by the Model destructor
+    ~Group () { }
 
 }; // struct Group
 

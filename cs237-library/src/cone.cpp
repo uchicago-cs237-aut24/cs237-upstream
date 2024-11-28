@@ -15,7 +15,7 @@
 namespace cs237 {
 namespace gobj {
 
-OBJ::Group *cone (
+Obj *cone (
     VertexAttrs attrs,
     glm::vec3 pos,
     glm::vec3 dir,

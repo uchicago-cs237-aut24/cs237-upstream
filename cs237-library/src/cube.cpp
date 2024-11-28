@@ -22,7 +22,7 @@ constexpr int kNumIndices = 3 * kNumTris;
 
 // helper function for initializing a face of the cube mesh
 static void _initFace (
-    OBJ::Group *grp,
+    Obj *grp,
     int face,
     glm::vec3 v1,
     glm::vec3 v2)
@@ -70,7 +70,7 @@ static void _initFace (
 }
 
 
-OBJ::Group *cube (VertexAttrs attrs, glm::vec3 center, float width)
+Obj *cube (VertexAttrs attrs, glm::vec3 center, float width)
 {
     if (width <= 0.0) {
         return nullptr;
@@ -80,7 +80,7 @@ OBJ::Group *cube (VertexAttrs attrs, glm::vec3 center, float width)
     bool hasTCs = hasTextureCoords(attrs);
 
     // allocate memory for the group
-    OBJ::Group *grp = __detail::allocGroup (
+    auto *grp = __detail::allocGroup (
         "cube",
         // if we have normals or texture coordinates,
         // then there are three vertices per corner
