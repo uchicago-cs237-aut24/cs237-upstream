@@ -345,8 +345,24 @@ protected:
     /// get a pointer to the current per-frame rendering state
     FrameData *_currentFrame () { return this->_frames[this->_curFrameIdx]; }
 
+    /// get a pointer to the previous per-frame rendering state
+    FrameData *_prevFrame ()
+    {
+        if (this->_curFrameIdx == 0) {
+            return this->_frames[kMaxFrames - 1];
+        } else {
+            return this->_frames[this->_curFrameIdx - 1];
+        }
+    }
+
+    /// get a pointer to the next per-frame rendering state
+    FrameData *_nextFrame ()
+    {
+        return this->_frames[(this->_curFrameIdx + 1) % kMaxFrames];
+    }
+
     /// advance the current frame
-    void _nextFrame () { this->_curFrameIdx = (this->_curFrameIdx + 1) % kMaxFrames; }
+    void _advanceFrame () { this->_curFrameIdx = (this->_curFrameIdx + 1) % kMaxFrames; }
 
     /// acquire the next image from the swap chain.  This method has the side effect
     /// of setting the `index` of the current frame to the index of the swap-chain
@@ -454,6 +470,27 @@ protected:
     void _setViewportCmd (vk::CommandBuffer cmdBuf,
         int32_t x, int32_t y,
         int32_t wid, int32_t ht);
+
+    /// \brief A helper function for allocating and binding device memory for an image
+    /// \param img    the image to allocate memory for
+    /// \param props  requred memory properties
+    /// \return the device memory that has been bound to the image
+    vk::DeviceMemory _allocImageMemory (vk::Image img, vk::MemoryPropertyFlags props)
+    {
+        return this->_app->_allocImageMemory (img, props);
+    }
+
+    /// \brief A helper function for creating a Vulkan image view object for an image
+    /// \param img          the image on which the view is created
+    /// \param fmt          the format and type used to interpret image texels
+    /// \param aspectFlags  a bitmask specifying which aspect(s) of the image are
+    ///                     included in the view.
+    /// \return the image view
+    vk::ImageView _createImageView (
+        vk::Image img, vk::Format fmt, vk::ImageAspectFlags aspectFlags)
+    {
+        return this->_app->_createImageView (img, format, aspectFlags);
+    }
 
 public:
 

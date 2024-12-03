@@ -559,8 +559,13 @@ protected:
     vk::DeviceMemory _allocImageMemory (vk::Image img, vk::MemoryPropertyFlags props);
 
     /// \brief A helper function for creating a Vulkan image view object for an image
+    /// \param img          the image on which the view is created
+    /// \param fmt          the format and type used to interpret image texels
+    /// \param aspectFlags  a bitmask specifying which aspect(s) of the image are
+    ///                     included in the view.
+    /// \return the image view
     vk::ImageView _createImageView (
-        vk::Image image, vk::Format format, vk::ImageAspectFlags aspectFlags);
+        vk::Image img, vk::Format fmt, vk::ImageAspectFlags aspectFlags);
 
     /// \brief A helper function for changing the layout of an image
     void _transitionImageLayout (

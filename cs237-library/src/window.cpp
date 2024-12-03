@@ -385,7 +385,7 @@ Window::FrameData *Window::_allocFrameData (Window *w)
 vk::Result Window::_acquireNextImage ()
 {
     // first we advance the frame
-    this->_nextFrame();
+    this->_advanceFrame();
 
     FrameData *frame = this->_currentFrame();
     auto sts = this->device().waitForFences({frame->inFlight}, VK_TRUE, UINT64_MAX);
