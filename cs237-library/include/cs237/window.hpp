@@ -489,7 +489,7 @@ protected:
     vk::ImageView _createImageView (
         vk::Image img, vk::Format fmt, vk::ImageAspectFlags aspectFlags)
     {
-        return this->_app->_createImageView (img, format, aspectFlags);
+        return this->_app->_createImageView (img, fmt, aspectFlags);
     }
 
 public:
