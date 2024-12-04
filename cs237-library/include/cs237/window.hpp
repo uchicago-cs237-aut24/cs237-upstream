@@ -273,10 +273,19 @@ protected:
         //
         virtual ~FrameData ();
 
-        /// reset this frame's fence
+        /// wait for this frame's `inFlight' fence
+        void waitForFence ()
+        {
+            auto sts = this->win->device().waitForFences(this->inFlight, VK_TRUE, UINT64_MAX);
+            if (sts != vk::Result::eSuccess) {
+                ERROR("Synchronization error");
+            }
+        }
+
+        /// reset this frame's `inFlight` fence
         void resetFence ()
         {
-            this->win->device().resetFences({this->inFlight});
+            this->win->device().resetFences(this->inFlight);
         }
 
         /// submit drawing commands for this frame using the main command buffer
@@ -490,6 +499,20 @@ protected:
         vk::Image img, vk::Format fmt, vk::ImageAspectFlags aspectFlags)
     {
         return this->_app->_createImageView (img, fmt, aspectFlags);
+    }
+
+    /// \brief A helper function for changing the layout of an image
+    /// \param img        the image to change
+    /// \param fmt        the image's format
+    /// \param oldLayout  the current layout of `img`
+    /// \param newLayout  the new layout of `img`
+    void _transitionImageLayout (
+        vk::Image img,
+        vk::Format fmt,
+        vk::ImageLayout oldLayout,
+        vk::ImageLayout newLayout)
+    {
+        this->_app->_transitionImageLayout(img, fmt, oldLayout, newLayout);
     }
 
 public:

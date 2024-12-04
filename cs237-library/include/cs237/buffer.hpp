@@ -305,10 +305,11 @@ public:
 
     /// constructor
     /// \param app  the owning application object
-    StorageBuffer (Application *app, vk::ArrayProxy<S> const &src, uint32_t nValues)
-    : Buffer (app, vk::BufferUsageFlagBits::eStorageBuffer, nValues*sizeof(S))
+    /// \param[in] src  the buffer contents to copy to the Vulkan memory buffer
+    StorageBuffer (Application *app, vk::ArrayProxy<S> const &src)
+    : Buffer (app, vk::BufferUsageFlagBits::eStorageBuffer, src.size()*sizeof(S))
     {
-        this->copyTo(src);
+        this->copyTo(src.data());
     }
 
     /// copy the buffer data to the device memory object

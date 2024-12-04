@@ -99,6 +99,7 @@ struct Obj {
 };
 
 /// construct an axis-aligned cube centered at the origin
+/// \param attrs   specify the attributes of the sphere's vertices
 /// \param center  the cube's center
 /// \param width   the width of a side
 /// \return a `OBJ::Group` object that holds the vertex data for the cube.  Returns

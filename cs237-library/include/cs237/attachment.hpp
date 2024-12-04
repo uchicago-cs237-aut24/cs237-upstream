@@ -71,8 +71,6 @@ public:
     /// \param app    the owning application
     /// \param wid    the width of the attachment
     /// \param ht     the height of the attachment
-    /// \param fmt    the pixel format of the attachment
-    /// \param usage  the way that this attachment is going to be used
     DepthAttachment (cs237::Application *app, uint32_t wid, uint32_t ht)
     : Attachment (app, wid, ht,
         app->_depthStencilBufferFormat(true, false),

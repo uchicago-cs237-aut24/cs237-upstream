@@ -481,13 +481,28 @@ void Application::_transitionImageLayout (
     vk::PipelineStageFlags srcStage;
     vk::PipelineStageFlags dstStage;
 
-    if ((oldLayout == vk::ImageLayout::eUndefined)
-    && (newLayout == vk::ImageLayout::eTransferDstOptimal)) {
+    if (oldLayout == vk::ImageLayout::eUndefined) {
         barrier.srcAccessMask = {};
-        barrier.dstAccessMask = vk::AccessFlagBits::eTransferWrite;
+        if (newLayout == vk::ImageLayout::eTransferDstOptimal) {
+            barrier.dstAccessMask = vk::AccessFlagBits::eShaderRead;
 
-        srcStage = vk::PipelineStageFlagBits::eTopOfPipe;
-        dstStage = vk::PipelineStageFlagBits::eTransfer;
+            srcStage = vk::PipelineStageFlagBits::eTopOfPipe;
+            dstStage = vk::PipelineStageFlagBits::eTransfer;
+        }
+        else if (newLayout == vk::ImageLayout::eGeneral) {
+            /* TODO: this case is for image buffers used by a compute shader,
+             * but we probably should make the access masks and stages be
+             * parameters to the method.
+             */
+            barrier.dstAccessMask =
+                vk::AccessFlagBits::eShaderRead|vk::AccessFlagBits::eShaderWrite;
+
+            srcStage = vk::PipelineStageFlagBits::eAllCommands;
+            dstStage = vk::PipelineStageFlagBits::eAllCommands;
+        }
+        else {
+            ERROR("unsupported layout transition!");
+        }
     }
     else if ((oldLayout == vk::ImageLayout::eTransferDstOptimal)
     && (newLayout == vk::ImageLayout::eShaderReadOnlyOptimal)) {
