@@ -484,7 +484,7 @@ void Application::_transitionImageLayout (
     if (oldLayout == vk::ImageLayout::eUndefined) {
         barrier.srcAccessMask = {};
         if (newLayout == vk::ImageLayout::eTransferDstOptimal) {
-            barrier.dstAccessMask = vk::AccessFlagBits::eShaderRead;
+            barrier.dstAccessMask = vk::AccessFlagBits::eTransferWrite;
 
             srcStage = vk::PipelineStageFlagBits::eTopOfPipe;
             dstStage = vk::PipelineStageFlagBits::eTransfer;
