@@ -274,7 +274,7 @@ public:
     /// get the default buffer-descriptor info for this buffer
     vk::DescriptorBufferInfo descInfo ()
     {
-        return vk::DescriptorBufferInfo(this->_buf, 0, sizeof(SV));
+        return vk::DescriptorBufferInfo(this->_buf, 0, VK_WHOLE_SIZE);
     }
 
 };
