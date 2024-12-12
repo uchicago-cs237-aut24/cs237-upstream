@@ -1,0 +1,8 @@
+newmtl acmat_0
+Kd 1 1 1
+Ka 1 1 1
+Ks 1 1 1
+Ns 100
+Tr 0
+map_Kd rock-cmap.png
+map_Bump rock-nmap.png

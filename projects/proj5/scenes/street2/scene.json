@@ -1,0 +1,170 @@
+{
+  "camera" : {
+      "size" : { "wid" : 1280, "ht" : 1024 },
+      "fov" : 60,
+      "pos" : { "x" : 8, "y" : 14, "z" : -41.5 },
+      "look-at" : { "x" : -8, "y" : 0, "z" : 0 },
+      "up" : { "x" : 0, "y" : 1, "z" : 0 }
+    },
+  "lighting" : {
+      "direction" : { "x" : -1, "y" : -1, "z" : -1},
+      "intensity" : { "r" : 0.1, "g" : 0.1, "b" : 0.1},
+      "ambient" : { "r" : 0.2, "g" : 0.2, "b" : 0.2},
+      "shadow" : 0.25,
+      "lights" : [
+	  { "name" : "street-light-1",
+	    "pos" : { "x" : -6.05, "y" : 4.67, "z" : -26 },
+	    "direction" : { "x" : 0, "y" : -1, "z" : 0 },
+	    "cutoff" : 60,
+	    "exponent" : 1,
+	    "intensity" : { "r" : 0.9, "g" : 0.9, "b" : 0.6 },
+	    "attenuation" : [1.0, 0.07, 0.017]
+	  },
+	  { "name" : "street-light-2",
+	    "pos" : { "x" : -9.95, "y" : 4.67, "z" : -4 },
+	    "direction" : { "x" : 0, "y" : -1, "z" : 0 },
+	    "cutoff" : 60,
+	    "exponent" : 1,
+	    "intensity" : { "r" : 0.9, "g" : 0.9, "b" : 0.6 },
+	    "attenuation" : [1.0, 0.07, 0.017]
+	  },
+	  { "name" : "street-light-3",
+	    "pos" : { "x" : -9.95, "y" : 4.67, "z" : 20 },
+	    "direction" : { "x" : 0, "y" : -1, "z" : 0 },
+	    "cutoff" : 60,
+	    "exponent" : 1,
+	    "intensity" : { "r" : 0.9, "g" : 0.9, "b" : 0.6 },
+	    "attenuation" : [1.0, 0.07, 0.017]
+	  },
+	  { "name" : "parking-lot-light",
+	    "pos" : { "x" : 6.45, "y" : 4.92, "z" : 0 },
+	    "pos" : { "x" : -9.95, "y" : 4.67, "z" : 20 },
+	    "direction" : { "x" : 0, "y" : -1, "z" : 0 },
+	    "cutoff" : 60,
+	    "exponent" : 1,
+	    "intensity" : { "r" : 0.9, "g" : 0.9, "b" : 0.6 },
+	    "attenuation" : [1.0, 0.07, 0.017]
+	  },
+	  { "name" : "left-headlight",
+	    "pos" : { "x" : -6.70, "y" : 1, "z" : -19.4 },
+	    "direction" : { "x" : -0.08, "y" : 0, "z" : 1 },
+	    "cutoff" : 10,
+	    "exponent" : 2,
+	    "intensity" : { "r" : 1, "g" : 1, "b" : 1 },
+	    "attenuation" : [1.0, 0.002, 0.002]
+	  },
+	  { "name" : "right-headlight",
+	    "pos" : { "x" : -5.30, "y" : 1, "z" : -19.4 },
+	    "direction" : { "x" : 0.08, "y" : 0, "z" : 1 },
+	    "cutoff" : 10,
+	    "exponent" : 2,
+	    "intensity" : { "r" : 1, "g" : 1, "b" : 1 },
+	    "attenuation" : [1.0, 0.002, 0.002]
+	  }
+	]
+    },
+  "ground" : {
+      "plane" : {"nx" : 0, "ny" : 1, "nz" : 0, "d" : 0},
+      "size" : { "wid" : 64, "ht" : 64 },
+      "v-scale" : 0.0078125,
+      "height-field" : "ground-hf.png",
+      "color" : { "r" : 0.4, "b" : 0.5, "g" : 0.75 },
+      "color-map" : "ground-cmap.png"
+    },
+  "objects" : [
+      { "file" : "Farmhouse.obj",
+        "color" : { "r" : 0, "g" : 0.8, "b" :0.1 },
+        "pos" : { "x" : 4, "y" : 0.45, "z" : 12.5 },
+        "frame" : {
+            "x-axis" : { "x" : 1, "y" : 0, "z" : 0},
+            "y-axis" : { "x" : 0, "y" : 1, "z" : 0},
+            "z-axis" : { "x" : 0, "y" : 0, "z" : 1}
+          }
+      },
+      { "file" : "car.obj",
+        "color" : { "r" : 0, "g" : 0.5, "b" : 1 },
+        "pos" : { "x" : -6, "y" : 0.25, "z" : -22 },
+        "frame" : {
+            "x-axis" : { "x" : 0.5, "y" : 0, "z" : 0},
+            "y-axis" : { "x" : 0, "y" : 0.5, "z" : 0},
+            "z-axis" : { "x" : 0, "y" : 0, "z" : 0.5}
+          }
+      },
+      { "file" : "StreetLamp.obj",
+        "color" : { "r" : 1, "g" : 0, "b" : 0.25 },
+        "pos" : { "x" : -3.5, "y" : 0.25, "z" : -26 },
+        "frame" : {
+            "x-axis" : { "x" : -1, "y" : 0, "z" : 0},
+            "y-axis" : { "x" : 0, "y" : 1, "z" : 0},
+            "z-axis" : { "x" : 0, "y" : 0, "z" : 1}
+          }
+      },
+      { "file" : "StreetLamp.obj",
+        "color" : { "r" : 1, "g" : 0, "b" : 0.25 },
+        "pos" : { "x" : -12.5, "y" : 0.25, "z" : -4 },
+        "frame" : {
+            "x-axis" : { "x" : 1, "y" : 0, "z" : 0},
+            "y-axis" : { "x" : 0, "y" : 1, "z" : 0},
+            "z-axis" : { "x" : 0, "y" : 0, "z" : 1}
+          }
+      },
+      { "file" : "StreetLamp.obj",
+        "color" : { "r" : 1, "g" : 0, "b" : 0.25 },
+        "pos" : { "x" : -12.5, "y" : 0.25, "z" : 20 },
+        "frame" : {
+            "x-axis" : { "x" : 1, "y" : 0, "z" : 0},
+            "y-axis" : { "x" : 0, "y" : 1, "z" : 0},
+            "z-axis" : { "x" : 0, "y" : 0, "z" : 1}
+          }
+      },
+      { "file" : "StreetLamp.obj",
+        "color" : { "r" : 1, "g" : 0, "b" : 0.25 },
+        "pos" : { "x" : 9, "y" : 0.5, "z" : 0 },
+        "frame" : {
+            "x-axis" : { "x" : -1, "y" : 0, "z" : 0},
+            "y-axis" : { "x" : 0, "y" : 1, "z" : 0},
+            "z-axis" : { "x" : 0, "y" : 0, "z" : 1}
+          }
+      },
+      { "file" : "rock.obj",
+        "color" : { "r" : 1, "g" : 0, "b" : 1 },
+        "pos" : { "x" : -15, "y" : 0.5, "z" : 17 },
+        "frame" : {
+            "x-axis" : { "x" : 1, "y" : 0, "z" : 0},
+            "y-axis" : { "x" : 0, "y" : 1, "z" : 0},
+            "z-axis" : { "x" : 0, "y" : 0, "z" : 1}
+          }
+      },
+      { "file" : "rock.obj",
+        "color" : { "r" : 1, "g" : 0, "b" : 1 },
+        "pos" : { "x" : 5, "y" : 0.5, "z" : -5 },
+        "frame" : {
+            "x-axis" : { "x" : 1, "y" : 0, "z" : 0},
+            "y-axis" : { "x" : 0, "y" : 1, "z" : 0},
+            "z-axis" : { "x" : 0, "y" : 0, "z" : 1}
+          }
+      },
+      { "file" : "rock.obj",
+        "color" : { "r" : 1, "g" : 0, "b" : 1 },
+        "pos" : { "x" : 8, "y" : 0.6, "z" : -4.8 },
+        "frame" : {
+            "x-axis" : { "x" : -1, "y" : 0, "z" : 0},
+            "y-axis" : { "x" : 0, "y" : 1, "z" : 0},
+            "z-axis" : { "x" : 0, "y" : 0, "z" : 1}
+          }
+      }
+    ],
+  "rain" : {
+      "num-particles" : 1048576,
+      "generator" : {
+            "size" : {"wid" : 68, "ht" : 68},
+            "origin" : {"x" : -34, "y" : 32, "z" : -34},
+            "tan" : {"x" : 1, "y" : 0, "z" : 0},
+            "bitan" : {"x" : 0, "y" : 0, "z" : 1}
+          },
+      "death-plane" : {"nx" : 0, "ny" : 1, "nz" : 0, "d" : 0},
+      "velocity" : {"x" : 0.125, "y" : -0.5, "z" : 0.125},
+      "acceleration" : {"x" : 0.125, "y" : -4.0, "z" : 0.125},
+      "color" : {"r" : 0.8, "g" : 0.9, "b" : 1, "a" : 0.8}
+    }
+}
