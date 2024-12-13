@@ -57,7 +57,7 @@ using ShadowUBO = cs237::UniformBuffer<ShadowUB>;
 /// The shader representation of a spot light
 //
 struct SpotLightUB {
-    alignas(16) glm::vec3 position;     ///< vector pointing toward directional light
+    alignas(16) glm::vec3 position;     ///< the world position of the light
     alignas(16) glm::vec3 direction;    ///< vector pointing toward directional light
     alignas(16) glm::vec3 intensity;    ///< intensity of the light
     alignas(16) glm::vec3 atten;        ///< k0, k1, and k2 as vec3

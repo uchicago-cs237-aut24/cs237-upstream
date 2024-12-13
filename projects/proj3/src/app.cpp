@@ -20,16 +20,16 @@
 
 namespace std_fs = std::filesystem;
 
-#ifdef CS237_SOURCE_DIR
+#ifdef PROJ3_SOURCE_ROOT
 //!< the absolute path to the directory containing the scenes
 const std::string kDataDir = PROJ3_SOURCE_ROOT "/scenes";
 #else
-# error CS237_SOURCE_DIR not defined
+# error PROJ3_SOURCE_ROOT not defined
 #endif
 
 static void usage (int sts)
 {
-    std::cerr << "usage: proj1 [options] <scene>\n";
+    std::cerr << "usage: proj3 [options] <scene>\n";
     exit (sts);
 }
 
@@ -49,14 +49,14 @@ Proj3::Proj3 (std::vector<std::string> const &args)
     // verify that the scene path exists
     auto sts = std_fs::status(scenePath);
     if (sts.type() != std_fs::file_type::directory) {
-        std::cerr << "proj1: scene '" << std::string(scenePath)
+        std::cerr << "proj3: scene '" << std::string(scenePath)
             << "' is not a directory or does not exist\n";
         exit(EXIT_FAILURE);
     }
 
     // load the scene
     if (this->_scene.load(scenePath)) {
-        std::cerr << "proj1: cannot load scene from '" << scenePath << "'\n";
+        std::cerr << "proj3: cannot load scene from '" << scenePath << "'\n";
         exit(EXIT_FAILURE);
     }
 

@@ -31,7 +31,6 @@ Mesh::Mesh (Proj3 *app, HeightField const *hf)
     uint32_t nTris = hf->numTris();
 
     // since we are not using triangle strips, the number of indices will be 3*nTris
-    assert (nVerts < 0xffff && "too many vertices");
     Vertex *verts = new Vertex[nVerts];
     uint32_t *indices = new uint32_t[3*nTris];
 
